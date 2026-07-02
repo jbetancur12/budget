@@ -31,6 +31,9 @@ RUN mkdir -p /app/temp && chown -R appuser:appgroup /app
 
 USER appuser
 
-EXPOSE 3001
+EXPOSE 3457
 
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["node", "dist/index.js"]

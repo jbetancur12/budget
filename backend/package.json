@@ -12,11 +12,13 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "migrate:up": "tsx node_modules/.bin/mikro-orm migration:up",
+    "migrate:up": "tsx src/scripts/run-migration.ts",
+    "migrate:prod": "node dist/scripts/run-migration.js",
     "migrate:down": "tsx node_modules/.bin/mikro-orm migration:down",
     "migrate:list": "tsx node_modules/.bin/mikro-orm migration:list",
     "migrate:create": "tsx node_modules/.bin/mikro-orm migration:create",
-    "seed": "tsx src/seed.ts"
+    "seed": "tsx src/seed.ts",
+    "seed:prod": "node dist/seed.js"
   },
   "dependencies": {
     "@mikro-orm/core": "^6.4.0",

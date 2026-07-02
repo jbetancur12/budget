@@ -6,10 +6,6 @@ import { logger } from './middleware/logger.js';
 async function main() {
   const orm = await initORM();
 
-  // Run pending migrations
-  const migrator = orm.getMigrator();
-  await migrator.up();
-
   const app = createApp(orm);
 
   const server = app.listen(config.port, () => {
