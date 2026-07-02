@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Header } from '../components/layout/Header';
 import { MobileNav } from '../components/layout/MobileNav';
+import { PwaUpdatePrompt } from '../components/PwaUpdatePrompt';
 import { Dashboard } from '../pages/Dashboard';
 import { Transactions } from '../pages/Transactions';
 import { Pockets } from '../pages/Pockets';
@@ -94,6 +95,7 @@ export default function App() {
       </main>
 
       <MobileNav tab={tab} onTabChange={setTab} onLogout={logout} />
+      <PwaUpdatePrompt />
     </div>
   );
 }
