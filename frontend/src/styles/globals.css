@@ -40,9 +40,13 @@ body::after {
   animation-delay: 0.2s;
 }
 
-/* ── Smooth scroll ── */
+/* ── Prevent horizontal scroll ── */
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+body {
+  overflow-x: hidden;
 }
 
 /* ── Custom scrollbar ── */

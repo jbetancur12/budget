@@ -96,7 +96,7 @@ export function Header({
             </button>
             <button
               onClick={() => setOpen((o) => !o)}
-              className="text-xs sm:text-sm font-display min-w-[90px] sm:min-w-[148px] text-center hover:bg-white/10 rounded-lg px-2 py-0.5 transition-colors cursor-pointer"
+              className="text-xs sm:text-sm font-display min-w-[70px] sm:min-w-[148px] text-center hover:bg-white/10 rounded-lg px-2 py-0.5 transition-colors cursor-pointer"
             >
               {monthLabel}
             </button>
