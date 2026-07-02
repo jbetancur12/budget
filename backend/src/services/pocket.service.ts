@@ -53,7 +53,10 @@ export class PocketService {
   async transfer(id: number, amount: number) {
     const pocket = await this.em.findOne(Pocket, id);
     if (!pocket) throw new NotFoundError('Pocket not found');
-    if (amount <= 0) throw new BadRequestError('Invalid amount');
+    if (amount === 0) throw new BadRequestError('Amount must be non-zero');
+    if (amount < 0 && pocket.balance + amount < 0) {
+      throw new BadRequestError('Insufficient balance');
+    }
     pocket.balance += amount;
     await this.em.flush();
     return pocket;

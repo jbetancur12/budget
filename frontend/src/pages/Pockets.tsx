@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Check, X, AlertCircle, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Minus, Check, X, AlertCircle, Pencil, Trash2 } from 'lucide-react';
 import { PocketIcon } from '../components/PocketIcon';
 import { MiniBar } from '../components/MiniBar';
 import { CloseMonthModal } from '../components/CloseMonthModal';
@@ -28,6 +28,8 @@ export function Pockets({
 }: PocketsProps) {
   const [transferringTo, setTransferringTo] = useState<number | null>(null);
   const [transferAmount, setTransferAmount] = useState('');
+  const [withdrawingFrom, setWithdrawingFrom] = useState<number | null>(null);
+  const [withdrawAmount, setWithdrawAmount] = useState('');
   const [showCloseModal, setShowCloseModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editPocket, setEditPocket] = useState<PocketData | null>(null);
@@ -47,6 +49,15 @@ export function Pockets({
     await onPocketsUpdated();
     setTransferringTo(null);
     setTransferAmount('');
+  };
+
+  const commitWithdraw = async (pocketId: number) => {
+    const amount = parseFloat(withdrawAmount.replace(/[^\d]/g, '')) || 0;
+    if (!amount || amount <= 0) return;
+    await transferToPocket(pocketId, -amount);
+    await onPocketsUpdated();
+    setWithdrawingFrom(null);
+    setWithdrawAmount('');
   };
 
   const handleCloseMonth = async (option: CloseOption, amounts?: Record<number, number>) => {
@@ -119,14 +130,26 @@ export function Pockets({
               {isTransferring ? (
                 <div className="flex items-center gap-2 border-t border-border pt-3">
                   <span className="text-xs text-muted-foreground shrink-0">Transferir:</span>
-                  <input autoFocus className="font-mono text-sm flex-1 min-w-0 border-2 border-accent rounded-xl px-3 py-1.5 bg-card focus:outline-none focus:ring-2 focus:ring-accent/20 placeholder:text-muted-foreground/50" placeholder="0" value={transferAmount} onChange={(e) => setTransferAmount(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') commitTransfer(); if (e.key === 'Escape') { setTransferringTo(null); setTransferAmount(''); } }} />
+                  <input autoFocus className="font-mono text-sm flex-1 min-w-0 border-2 border-accent rounded-xl px-3 py-1.5 bg-card focus:outline-none focus:ring-2 focus:ring-accent/20" placeholder="0" value={transferAmount} onChange={(e) => setTransferAmount(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') commitTransfer(); if (e.key === 'Escape') { setTransferringTo(null); setTransferAmount(''); } }} />
                   <button onClick={commitTransfer} className="p-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shrink-0"><Check className="w-3.5 h-3.5" /></button>
                   <button onClick={() => { setTransferringTo(null); setTransferAmount(''); }} className="p-2 rounded-xl border border-border hover:bg-muted transition-colors text-muted-foreground shrink-0"><X className="w-3.5 h-3.5" /></button>
                 </div>
+              ) : withdrawingFrom === p.id ? (
+                <div className="flex items-center gap-2 border-t border-border pt-3">
+                  <span className="text-xs text-muted-foreground shrink-0">Retirar:</span>
+                  <input autoFocus className="font-mono text-sm flex-1 min-w-0 border-2 border-destructive rounded-xl px-3 py-1.5 bg-card focus:outline-none focus:ring-2 focus:ring-destructive/20" placeholder="0" value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') commitWithdraw(p.id); if (e.key === 'Escape') { setWithdrawingFrom(null); setWithdrawAmount(''); } }} />
+                  <button onClick={() => commitWithdraw(p.id)} className="p-2 rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors shrink-0"><Check className="w-3.5 h-3.5" /></button>
+                  <button onClick={() => { setWithdrawingFrom(null); setWithdrawAmount(''); }} className="p-2 rounded-xl border border-border hover:bg-muted transition-colors text-muted-foreground shrink-0"><X className="w-3.5 h-3.5" /></button>
+                </div>
               ) : (
-                <button onClick={() => { setTransferringTo(p.id); setTransferAmount(''); }} className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold border border-dashed rounded-xl py-2 transition-colors" style={{ borderColor: p.color, color: p.color }} onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = `${p.color}12`; }} onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}>
-                  <Plus className="w-3.5 h-3.5" /> Transferir al bolsillo
-                </button>
+                <div className="flex gap-2">
+                  <button onClick={() => { setTransferringTo(p.id); setTransferAmount(''); }} className="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold border border-dashed rounded-xl py-2 transition-colors" style={{ borderColor: p.color, color: p.color }} onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = `${p.color}12`; }} onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}>
+                    <Plus className="w-3.5 h-3.5" /> Ingresar
+                  </button>
+                  <button onClick={() => { setWithdrawingFrom(p.id); setWithdrawAmount(''); }} className="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold border border-dashed rounded-xl py-2 transition-colors text-destructive border-destructive/40 hover:bg-destructive/5" style={{} }>
+                    <Minus className="w-3.5 h-3.5" /> Retirar
+                  </button>
+                </div>
               )}
             </div>
           );
