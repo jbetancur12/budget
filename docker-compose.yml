@@ -44,4 +44,4 @@ volumes:
 networks:
   app_network:
     external: true
-    name: parking_app_network
+    name: parking-app_app_network
