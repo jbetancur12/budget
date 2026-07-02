@@ -3,6 +3,7 @@ import { Plus, Check, X, AlertCircle } from 'lucide-react';
 import { PocketIcon } from '../components/PocketIcon';
 import { MiniBar } from '../components/MiniBar';
 import { CloseMonthModal } from '../components/CloseMonthModal';
+import { CreatePocketModal } from '../components/CreatePocketModal';
 import { fmt, safePercent } from '../utils';
 import { closeMonth, transferToPocket } from '../api';
 import type { PocketData, CloseOption } from '../types';
@@ -26,6 +27,7 @@ export function Pockets({
   const [transferringTo, setTransferringTo] = useState<number | null>(null);
   const [transferAmount, setTransferAmount] = useState('');
   const [showCloseModal, setShowCloseModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const totalIncome = income.reduce((s, i) => s + i.amount, 0);
   const totalExpenses = [...services, ...loans, ...variableExp].reduce((s, i) => s + i.amount, 0);
@@ -111,7 +113,7 @@ export function Pockets({
           );
         })}
 
-        <button className="border-2 border-dashed border-border rounded-2xl p-5 flex flex-col items-center justify-center gap-2.5 text-muted-foreground hover:border-primary/50 hover:text-primary hover:bg-primary/5 transition-all min-h-[160px]">
+        <button onClick={() => setShowCreateModal(true)} className="border-2 border-dashed border-border rounded-2xl p-5 flex flex-col items-center justify-center gap-2.5 text-muted-foreground hover:border-primary/50 hover:text-primary hover:bg-primary/5 transition-all min-h-[160px]">
           <div className="w-10 h-10 rounded-xl border-2 border-current flex items-center justify-center"><Plus className="w-5 h-5" /></div>
           <span className="text-sm font-semibold">Nuevo Bolsillo</span>
         </button>
@@ -140,6 +142,13 @@ export function Pockets({
       <button onClick={() => setShowCloseModal(true)} className="w-full sm:w-auto flex items-center justify-center gap-2.5 bg-primary text-primary-foreground px-7 py-4 sm:py-3.5 rounded-2xl font-bold text-sm hover:bg-primary/90 active:scale-95 transition-all shadow-lg hover:shadow-xl">
         <Check className="w-4 h-4" /> Cerrar Mes · {monthLabel}
       </button>
+
+      {showCreateModal && (
+        <CreatePocketModal
+          onClose={() => setShowCreateModal(false)}
+          onCreated={onPocketsUpdated}
+        />
+      )}
 
       {showCloseModal && (
         <CloseMonthModal
