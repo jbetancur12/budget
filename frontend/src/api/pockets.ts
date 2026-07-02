@@ -23,9 +23,9 @@ export async function deletePocket(id: number): Promise<void> {
   await request<void>(`/pockets/${id}`, { method: 'DELETE' });
 }
 
-export async function transferToPocket(id: number, amount: number): Promise<PocketData> {
+export async function transferToPocket(id: number, amount: number, monthOffset?: number): Promise<PocketData> {
   return request<PocketData>(`/pockets/${id}/transfer`, {
     method: 'POST',
-    body: JSON.stringify({ amount }),
+    body: JSON.stringify({ amount, monthOffset }),
   });
 }

@@ -1,5 +1,6 @@
 import { EntityManager } from '@mikro-orm/core';
 import { Pocket } from '../entities/Pocket.js';
+import { Item } from '../entities/Item.js';
 import type { PocketIcon } from '../entities/Pocket.js';
 import { NotFoundError, BadRequestError } from '../utils/errors.js';
 
@@ -50,7 +51,7 @@ export class PocketService {
     await this.em.remove(pocket).flush();
   }
 
-  async transfer(id: number, amount: number) {
+  async transfer(id: number, amount: number, monthOffset?: number) {
     const pocket = await this.em.findOne(Pocket, id);
     if (!pocket) throw new NotFoundError('Pocket not found');
     if (amount === 0) throw new BadRequestError('Amount must be non-zero');
@@ -58,6 +59,19 @@ export class PocketService {
       throw new BadRequestError('Insufficient balance');
     }
     pocket.balance += amount;
+
+    // When withdrawing, add as income for current month
+    if (amount < 0 && monthOffset !== undefined) {
+      const withdrawn = Math.abs(amount);
+      this.em.create(Item, {
+        name: `Retiro de ${pocket.name}`,
+        amount: withdrawn,
+        type: 'Variable',
+        category: 'income',
+        monthOffset,
+      } as never);
+    }
+
     await this.em.flush();
     return pocket;
   }

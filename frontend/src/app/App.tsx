@@ -98,6 +98,7 @@ export default function App() {
             loans={loans}
             variableExp={variableExp}
             monthLabel={monthLabel}
+            monthOffset={monthOffset}
             nextMonthLabel={nextMonthLabel}
             onPocketsUpdated={updatePockets}
             onMonthForward={() => setMonthOffset((o: number) => o + 1)}

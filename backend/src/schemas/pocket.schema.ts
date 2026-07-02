@@ -27,6 +27,7 @@ export const updatePocketSchema = z.object({
 export const transferSchema = z.object({
   body: z.object({
     amount: z.number(),
+    monthOffset: z.number().int().optional(),
   }),
   params: z.object({
     id: z.string().regex(/^\d+$/, 'ID must be a number'),

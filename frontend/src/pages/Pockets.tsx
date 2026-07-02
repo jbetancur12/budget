@@ -17,6 +17,7 @@ interface PocketsProps {
   loans: { amount: number }[];
   variableExp: { amount: number }[];
   monthLabel: string;
+  monthOffset: number;
   nextMonthLabel: string;
   onPocketsUpdated: () => Promise<void>;
   onMonthForward: () => void;
@@ -24,7 +25,7 @@ interface PocketsProps {
 
 export function Pockets({
   pockets, income, services, loans, variableExp,
-  monthLabel, nextMonthLabel, onPocketsUpdated, onMonthForward,
+  monthLabel, monthOffset, nextMonthLabel, onPocketsUpdated, onMonthForward,
 }: PocketsProps) {
   const [transferringTo, setTransferringTo] = useState<number | null>(null);
   const [transferAmount, setTransferAmount] = useState('');
@@ -54,7 +55,7 @@ export function Pockets({
   const commitWithdraw = async (pocketId: number) => {
     const amount = parseFloat(withdrawAmount.replace(/[^\d]/g, '')) || 0;
     if (!amount || amount <= 0) return;
-    await transferToPocket(pocketId, -amount);
+    await transferToPocket(pocketId, -amount, monthOffset);
     await onPocketsUpdated();
     setWithdrawingFrom(null);
     setWithdrawAmount('');

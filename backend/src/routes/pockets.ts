@@ -54,7 +54,7 @@ pocketsRouter.post(
   validate(transferSchema),
   asyncHandler(async (req, res) => {
     const service = new PocketService(req.orm.em.fork());
-    const pocket = await service.transfer(parseInt(req.params.id), req.body.amount);
+    const pocket = await service.transfer(parseInt(req.params.id), req.body.amount, req.body.monthOffset);
     ApiResponse.success(res, pocket);
   }),
 );
