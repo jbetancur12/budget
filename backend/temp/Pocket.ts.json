@@ -1,0 +1,101 @@
+{
+  "data": {
+    "_id": 1000,
+    "properties": {
+      "id": {
+        "name": "id",
+        "kind": "scalar",
+        "primary": true,
+        "type": "number",
+        "array": false,
+        "runtimeType": "number"
+      },
+      "name": {
+        "name": "name",
+        "kind": "scalar",
+        "getter": false,
+        "setter": false,
+        "type": "string",
+        "array": false,
+        "runtimeType": "string"
+      },
+      "balance": {
+        "name": "balance",
+        "kind": "scalar",
+        "default": 0,
+        "getter": false,
+        "setter": false,
+        "type": "number",
+        "array": false,
+        "runtimeType": "number"
+      },
+      "goal": {
+        "name": "goal",
+        "kind": "scalar",
+        "default": 0,
+        "getter": false,
+        "setter": false,
+        "type": "number",
+        "array": false,
+        "runtimeType": "number"
+      },
+      "color": {
+        "name": "color",
+        "kind": "scalar",
+        "default": "#3B82F6",
+        "getter": false,
+        "setter": false,
+        "type": "string",
+        "array": false,
+        "runtimeType": "string"
+      },
+      "icon": {
+        "name": "icon",
+        "kind": "scalar",
+        "type": "string",
+        "default": "Shield",
+        "getter": false,
+        "setter": false,
+        "array": false,
+        "runtimeType": "PocketIcon"
+      },
+      "createdAt": {
+        "name": "createdAt",
+        "kind": "scalar",
+        "getter": false,
+        "setter": false,
+        "type": "Date",
+        "array": false,
+        "runtimeType": "Date"
+      },
+      "updatedAt": {
+        "name": "updatedAt",
+        "kind": "scalar",
+        "getter": false,
+        "setter": false,
+        "type": "Date",
+        "array": false,
+        "runtimeType": "Date"
+      }
+    },
+    "primaryKeys": ["id"],
+    "filters": {},
+    "hooks": {},
+    "indexes": [],
+    "uniques": [],
+    "className": "Pocket",
+    "path": "./src/entities/Pocket.ts",
+    "name": "Pocket",
+    "abstract": false,
+    "internal": true,
+    "constructorParams": [],
+    "toJsonParams": [],
+    "useCache": true,
+    "compositePK": false,
+    "simplePK": true,
+    "collection": "pocket"
+  },
+  "origin": "./src/entities/Pocket.ts",
+  "hash": "6a1e6d875dec0cb1b6313d80d5b3198c",
+  "version": "6.6.15"
+}

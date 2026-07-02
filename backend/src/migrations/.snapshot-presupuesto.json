@@ -1,20 +1,22 @@
 {
-  "namespaces": ["public"],
+  "namespaces": [
+    "public"
+  ],
   "name": "public",
   "tables": [
     {
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
-          "unsigned": false,
+          "type": "int4",
+          "unsigned": true,
           "autoincrement": true,
           "primary": true,
           "nullable": false,
           "unique": false,
           "length": null,
-          "precision": null,
-          "scale": null,
+          "precision": 32,
+          "scale": 0,
           "default": null,
           "comment": null,
           "enumItems": [],
@@ -38,63 +40,71 @@
         },
         "amount": {
           "name": "amount",
-          "type": "int",
+          "type": "int4",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "unique": false,
           "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
+          "precision": 32,
+          "scale": 0,
+          "default": "0",
           "comment": null,
           "enumItems": [],
           "mappedType": "integer"
         },
         "type": {
           "name": "type",
-          "type": "varchar(255)",
+          "type": "varchar(10)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "unique": false,
-          "length": 255,
+          "length": 10,
           "precision": null,
           "scale": null,
           "default": null,
           "comment": null,
-          "enumItems": [],
-          "mappedType": "string"
+          "enumItems": [
+            "Fijo",
+            "Variable"
+          ],
+          "mappedType": "enum"
         },
         "category": {
           "name": "category",
-          "type": "varchar(255)",
+          "type": "varchar(20)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "unique": false,
-          "length": 255,
+          "length": 20,
           "precision": null,
           "scale": null,
           "default": null,
           "comment": null,
-          "enumItems": [],
-          "mappedType": "string"
+          "enumItems": [
+            "income",
+            "services",
+            "loans",
+            "variable"
+          ],
+          "mappedType": "enum"
         },
         "month_offset": {
           "name": "month_offset",
-          "type": "int",
+          "type": "int4",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "unique": false,
           "length": null,
-          "precision": null,
-          "scale": null,
+          "precision": 32,
+          "scale": 0,
           "default": "0",
           "comment": null,
           "enumItems": [],
@@ -102,7 +112,7 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamptz",
+          "type": "timestamptz(6)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
@@ -111,14 +121,14 @@
           "length": 6,
           "precision": null,
           "scale": null,
-          "default": null,
+          "default": "now()",
           "comment": null,
           "enumItems": [],
           "mappedType": "datetime"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamptz",
+          "type": "timestamptz(6)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
@@ -127,7 +137,7 @@
           "length": 6,
           "precision": null,
           "scale": null,
-          "default": null,
+          "default": "now()",
           "comment": null,
           "enumItems": [],
           "mappedType": "datetime"
@@ -137,31 +147,34 @@
       "schema": "public",
       "indexes": [
         {
-          "keyName": "item_pkey",
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
+          "constraint": false,
+          "keyName": "item_pkey",
+          "unique": true,
+          "primary": true
         }
       ],
       "checks": [],
       "foreignKeys": {},
-      "nativeEnums": {}
+      "nativeEnums": {},
+      "comment": null
     },
     {
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
-          "unsigned": false,
+          "type": "int4",
+          "unsigned": true,
           "autoincrement": true,
           "primary": true,
           "nullable": false,
           "unique": false,
           "length": null,
-          "precision": null,
-          "scale": null,
+          "precision": 32,
+          "scale": 0,
           "default": null,
           "comment": null,
           "enumItems": [],
@@ -169,15 +182,15 @@
         },
         "month_offset": {
           "name": "month_offset",
-          "type": "int",
+          "type": "int4",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "unique": false,
           "length": null,
-          "precision": null,
-          "scale": null,
+          "precision": 32,
+          "scale": 0,
           "default": null,
           "comment": null,
           "enumItems": [],
@@ -185,13 +198,13 @@
         },
         "month_label": {
           "name": "month_label",
-          "type": "varchar(255)",
+          "type": "varchar(20)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "unique": false,
-          "length": 255,
+          "length": 20,
           "precision": null,
           "scale": null,
           "default": null,
@@ -201,15 +214,15 @@
         },
         "total_income": {
           "name": "total_income",
-          "type": "int",
+          "type": "int4",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "unique": false,
           "length": null,
-          "precision": null,
-          "scale": null,
+          "precision": 32,
+          "scale": 0,
           "default": "0",
           "comment": null,
           "enumItems": [],
@@ -217,15 +230,15 @@
         },
         "total_expenses": {
           "name": "total_expenses",
-          "type": "int",
+          "type": "int4",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "unique": false,
           "length": null,
-          "precision": null,
-          "scale": null,
+          "precision": 32,
+          "scale": 0,
           "default": "0",
           "comment": null,
           "enumItems": [],
@@ -233,15 +246,15 @@
         },
         "savings": {
           "name": "savings",
-          "type": "int",
+          "type": "int4",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "unique": false,
           "length": null,
-          "precision": null,
-          "scale": null,
+          "precision": 32,
+          "scale": 0,
           "default": "0",
           "comment": null,
           "enumItems": [],
@@ -249,7 +262,7 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamptz",
+          "type": "timestamptz(6)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
@@ -258,7 +271,7 @@
           "length": 6,
           "precision": null,
           "scale": null,
-          "default": null,
+          "default": "now()",
           "comment": null,
           "enumItems": [],
           "mappedType": "datetime"
@@ -268,31 +281,34 @@
       "schema": "public",
       "indexes": [
         {
-          "keyName": "monthly_history_pkey",
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
+          "constraint": false,
+          "keyName": "monthly_history_pkey",
+          "unique": true,
+          "primary": true
         }
       ],
       "checks": [],
       "foreignKeys": {},
-      "nativeEnums": {}
+      "nativeEnums": {},
+      "comment": null
     },
     {
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
-          "unsigned": false,
+          "type": "int4",
+          "unsigned": true,
           "autoincrement": true,
           "primary": true,
           "nullable": false,
           "unique": false,
           "length": null,
-          "precision": null,
-          "scale": null,
+          "precision": 32,
+          "scale": 0,
           "default": null,
           "comment": null,
           "enumItems": [],
@@ -316,15 +332,15 @@
         },
         "balance": {
           "name": "balance",
-          "type": "int",
+          "type": "int4",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "unique": false,
           "length": null,
-          "precision": null,
-          "scale": null,
+          "precision": 32,
+          "scale": 0,
           "default": "0",
           "comment": null,
           "enumItems": [],
@@ -332,15 +348,15 @@
         },
         "goal": {
           "name": "goal",
-          "type": "int",
+          "type": "int4",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "unique": false,
           "length": null,
-          "precision": null,
-          "scale": null,
+          "precision": 32,
+          "scale": 0,
           "default": "0",
           "comment": null,
           "enumItems": [],
@@ -348,13 +364,13 @@
         },
         "color": {
           "name": "color",
-          "type": "varchar(255)",
+          "type": "varchar(7)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "unique": false,
-          "length": 255,
+          "length": 7,
           "precision": null,
           "scale": null,
           "default": "'#3B82F6'",
@@ -364,6 +380,113 @@
         },
         "icon": {
           "name": "icon",
+          "type": "varchar(20)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 20,
+          "precision": null,
+          "scale": null,
+          "default": "'Shield'",
+          "comment": null,
+          "enumItems": [
+            "Shield",
+            "Plane",
+            "TrendingUp",
+            "BookOpen"
+          ],
+          "mappedType": "enum"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": "now()",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz(6)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": "now()",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        }
+      },
+      "name": "pocket",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "pocket_pkey",
+          "unique": true,
+          "primary": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {},
+      "comment": null
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int4",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": 32,
+          "scale": 0,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "integer"
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": true,
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "password": {
+          "name": "password",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -373,14 +496,62 @@
           "length": 255,
           "precision": null,
           "scale": null,
-          "default": "'Shield'",
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "role": {
+          "name": "role",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": "'user'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "string"
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 255,
+          "precision": null,
+          "scale": null,
+          "default": null,
           "comment": null,
           "enumItems": [],
           "mappedType": "string"
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamptz",
+          "type": "timestamptz(6)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
@@ -396,7 +567,7 @@
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "timestamptz",
+          "type": "timestamptz(6)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
@@ -411,21 +582,34 @@
           "mappedType": "datetime"
         }
       },
-      "name": "pocket",
+      "name": "user",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "pocket_pkey",
-          "columnNames": ["id"],
+          "columnNames": [
+            "email"
+          ],
           "composite": false,
           "constraint": true,
-          "primary": true,
-          "unique": true
+          "keyName": "user_email_unique",
+          "unique": true,
+          "primary": false
+        },
+        {
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "user_pkey",
+          "unique": true,
+          "primary": true
         }
       ],
       "checks": [],
       "foreignKeys": {},
-      "nativeEnums": {}
+      "nativeEnums": {},
+      "comment": null
     }
   ],
   "nativeEnums": {}

@@ -4,19 +4,17 @@ import { MobileNav } from '../components/layout/MobileNav';
 import { Dashboard } from '../pages/Dashboard';
 import { Transactions } from '../pages/Transactions';
 import { Pockets } from '../pages/Pockets';
+import { LoginPage } from '../pages/LoginPage';
+import { useAuth } from '../hooks/useAuth';
 import { useMonth } from '../hooks/useMonth';
 import { useBudgetData } from '../hooks/useBudgetData';
 import type { Tab } from '../types';
 
 export default function App() {
-  const [tab, setTab] = useState<Tab>('dashboard');
+  const { user, loading } = useAuth();
   const { monthOffset, monthLabel, shortLabel, nextMonthLabel, setMonthOffset } = useMonth();
-  const {
-    income, services, loans, variableExp, pockets, chartHistory,
-    loading, error,
-    incomeH, servicesH, loansH, variableH, updatePockets,
-  } = useBudgetData(monthOffset);
-
+  const budgetData = useBudgetData(user ? monthOffset : null);
+  const [tab, setTab] = useState<Tab>('dashboard');
   const [servicesOpen, setServicesOpen] = useState(true);
   const [loansOpen, setLoansOpen] = useState(true);
 
@@ -28,13 +26,12 @@ export default function App() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-[100dvh] bg-background flex items-center justify-center">
-        <div className="text-destructive text-sm font-semibold">{error}</div>
-      </div>
-    );
-  }
+  if (!user) return <LoginPage />;
+
+  const {
+    income, services, loans, variableExp, pockets, chartHistory,
+    incomeH, servicesH, loansH, variableH, updatePockets,
+  } = budgetData;
 
   return (
     <div className="min-h-[100dvh] bg-background flex flex-col">

@@ -1,0 +1,98 @@
+{
+  "data": {
+    "_id": 0,
+    "properties": {
+      "id": {
+        "name": "id",
+        "kind": "scalar",
+        "primary": true,
+        "type": "number",
+        "array": false,
+        "runtimeType": "number"
+      },
+      "name": {
+        "name": "name",
+        "kind": "scalar",
+        "getter": false,
+        "setter": false,
+        "type": "string",
+        "array": false,
+        "runtimeType": "string"
+      },
+      "amount": {
+        "name": "amount",
+        "kind": "scalar",
+        "getter": false,
+        "setter": false,
+        "type": "number",
+        "array": false,
+        "runtimeType": "number"
+      },
+      "type": {
+        "name": "type",
+        "kind": "scalar",
+        "type": "string",
+        "getter": false,
+        "setter": false,
+        "array": false,
+        "runtimeType": "\"Fijo\" | \"Variable\""
+      },
+      "category": {
+        "name": "category",
+        "kind": "scalar",
+        "getter": false,
+        "setter": false,
+        "type": "\"income\" | \"services\" | \"loans\" | \"variable\"",
+        "array": false,
+        "runtimeType": "\"income\" | \"services\" | \"loans\" | \"variable\""
+      },
+      "monthOffset": {
+        "name": "monthOffset",
+        "kind": "scalar",
+        "default": 0,
+        "getter": false,
+        "setter": false,
+        "type": "number",
+        "array": false,
+        "runtimeType": "number"
+      },
+      "createdAt": {
+        "name": "createdAt",
+        "kind": "scalar",
+        "getter": false,
+        "setter": false,
+        "type": "Date",
+        "array": false,
+        "runtimeType": "Date"
+      },
+      "updatedAt": {
+        "name": "updatedAt",
+        "kind": "scalar",
+        "getter": false,
+        "setter": false,
+        "type": "Date",
+        "array": false,
+        "runtimeType": "Date"
+      }
+    },
+    "primaryKeys": ["id"],
+    "filters": {},
+    "hooks": {},
+    "indexes": [],
+    "uniques": [],
+    "className": "Item",
+    "path": "./src/entities/Item.ts",
+    "name": "Item",
+    "abstract": false,
+    "internal": true,
+    "constructorParams": [],
+    "toJsonParams": [],
+    "useCache": true,
+    "compositePK": false,
+    "simplePK": true,
+    "collection": "item"
+  },
+  "origin": "./src/entities/Item.ts",
+  "hash": "0a24022e0a6b7e7f9f0441391df48bb5",
+  "version": "6.6.15"
+}

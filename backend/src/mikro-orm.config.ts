@@ -5,6 +5,7 @@ import { config } from './config/index.js';
 import { Item } from './entities/Item.js';
 import { Pocket } from './entities/Pocket.js';
 import { MonthlyHistory } from './entities/MonthlyHistory.js';
+import { User } from './entities/User.js';
 
 export default defineConfig({
   dbName: config.db.name,
@@ -12,7 +13,7 @@ export default defineConfig({
   port: config.db.port,
   user: config.db.user,
   password: config.db.password,
-  entities: [Item, Pocket, MonthlyHistory],
+  entities: [Item, Pocket, MonthlyHistory, User],
   metadataProvider: TsMorphMetadataProvider,
   migrations: {
     path: './src/migrations',

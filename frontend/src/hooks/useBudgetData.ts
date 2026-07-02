@@ -31,7 +31,7 @@ async function loadCategory(category: string, offset: number): Promise<ItemData[
   return api.fetchItems(category, offset);
 }
 
-export function useBudgetData(monthOffset: number) {
+export function useBudgetData(monthOffset: number | null) {
   const [data, setData] = useState<BudgetData>({
     income: [],
     services: [],
@@ -74,27 +74,31 @@ export function useBudgetData(monthOffset: number) {
   }, []);
 
   useEffect(() => {
+    if (monthOffset === null) return;
     refresh(monthOffset);
   }, [monthOffset, refresh]);
 
   const makeHandlers = useCallback(
-    (category: string, type: ItemType): ItemHandlers => ({
-      onAmountChange: async (id: number, amount: number) => {
-        await api.updateItem(id, { amount });
-        const items = await loadCategory(category, monthOffset);
-        setData((prev) => updateCategory(prev, category, items));
-      },
-      onDelete: async (id: number) => {
-        await api.deleteItem(id);
-        const items = await loadCategory(category, monthOffset);
-        setData((prev) => updateCategory(prev, category, items));
-      },
-      onAdd: async (name: string, amount: number) => {
-        await api.createItem({ name, amount, type, category, monthOffset });
-        const items = await loadCategory(category, monthOffset);
-        setData((prev) => updateCategory(prev, category, items));
-      },
-    }),
+    (category: string, type: ItemType): ItemHandlers => {
+      const offset = monthOffset ?? 0;
+      return {
+        onAmountChange: async (id: number, amount: number) => {
+          await api.updateItem(id, { amount });
+          const items = await loadCategory(category, offset);
+          setData((prev) => updateCategory(prev, category, items));
+        },
+        onDelete: async (id: number) => {
+          await api.deleteItem(id);
+          const items = await loadCategory(category, offset);
+          setData((prev) => updateCategory(prev, category, items));
+        },
+        onAdd: async (name: string, amount: number) => {
+          await api.createItem({ name, amount, type, category, monthOffset: offset });
+          const items = await loadCategory(category, offset);
+          setData((prev) => updateCategory(prev, category, items));
+        },
+      };
+    },
     [monthOffset],
   );
 

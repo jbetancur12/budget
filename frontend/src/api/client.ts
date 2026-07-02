@@ -9,13 +9,34 @@ export class ApiError extends Error {
   }
 }
 
+function getToken(): string | null {
+  try {
+    const raw = localStorage.getItem('budget_auth');
+    if (!raw) return null;
+    return JSON.parse(raw).accessToken;
+  } catch {
+    return null;
+  }
+}
+
 export async function request<T>(url: string, options?: RequestInit): Promise<T> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  const token = getToken();
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
   const res = await fetch(`${BASE}${url}`, {
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     ...options,
   });
 
   if (!res.ok) {
+    if (res.status === 401) {
+      localStorage.removeItem('budget_auth');
+      window.location.href = '/';
+    }
     const body = await res.json().catch(() => ({}));
     throw new ApiError(body.message || `Request failed: ${res.status}`, res.status);
   }

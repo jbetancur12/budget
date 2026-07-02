@@ -14,6 +14,13 @@ export const config = {
     password: process.env.DB_PASSWORD || 'budget123',
   },
 
+  jwt: {
+    accessSecret: process.env.JWT_ACCESS_SECRET || 'dev-access-secret-change-in-prod-32chars',
+    refreshSecret: process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret-change-in-prod-32chars',
+    accessExpiresIn: '15m',
+    refreshExpiresIn: '7d',
+  },
+
   cors: {
     origins: process.env.CORS_ORIGINS?.split(',') || ['http://localhost:5173'],
   },
