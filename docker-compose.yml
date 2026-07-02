@@ -25,7 +25,7 @@ services:
       DB_HOST: postgres
       NODE_ENV: production
     ports:
-      - '3001:3001'
+      - '${BACKEND_PORT:-3457}:3457'
 
   frontend:
     build: ./frontend
@@ -33,7 +33,7 @@ services:
     depends_on:
       - backend
     ports:
-      - '${FRONTEND_PORT:-3000}:80'
+      - '${FRONTEND_PORT:-3456}:80'
 
 volumes:
   pgdata:

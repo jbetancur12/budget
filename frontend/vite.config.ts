@@ -63,10 +63,10 @@ export default defineConfig({
   },
   assetsInclude: ['**/*.svg', '**/*.csv'],
   server: {
-    port: 5173,
+    port: 3456,
     proxy: {
       '/api': {
-        target: 'http://localhost:3001',
+        target: 'http://localhost:3457',
         changeOrigin: true,
       },
     },
