@@ -55,22 +55,48 @@ export class PocketService {
     const pocket = await this.em.findOne(Pocket, id);
     if (!pocket) throw new NotFoundError('Pocket not found');
     if (amount === 0) throw new BadRequestError('Amount must be non-zero');
-    if (amount < 0 && pocket.balance + amount < 0) {
-      throw new BadRequestError('Insufficient balance');
-    }
-    pocket.balance += amount;
 
-    // When withdrawing, add as income for current month
-    if (amount < 0 && monthOffset !== undefined) {
+    // Withdraw: remove from pocket, add as income
+    if (amount < 0) {
       const withdrawn = Math.abs(amount);
+      if (pocket.balance < withdrawn) throw new BadRequestError('Insufficient balance');
+      pocket.balance -= withdrawn;
+
+      if (monthOffset !== undefined) {
+        this.em.create(Item, {
+          name: `Retiro de ${pocket.name}`,
+          amount: withdrawn,
+          type: 'Variable',
+          category: 'income',
+          monthOffset,
+        } as never);
+      }
+
+      await this.em.flush();
+      return pocket;
+    }
+
+    // Deposit: take from monthly balance, add to pocket
+    if (monthOffset !== undefined) {
+      const items = await this.em.find(Item, { monthOffset });
+      const totalIncome = items.filter((i) => i.category === 'income').reduce((s, i) => s + i.amount, 0);
+      const totalExpenses = items.filter((i) => i.category !== 'income').reduce((s, i) => s + i.amount, 0);
+      const available = totalIncome - totalExpenses;
+
+      if (amount > available) {
+        throw new BadRequestError(`Insufficient balance. Available: $${available}`);
+      }
+
       this.em.create(Item, {
-        name: `Retiro de ${pocket.name}`,
-        amount: withdrawn,
+        name: `Ahorro: ${pocket.name}`,
+        amount,
         type: 'Variable',
-        category: 'income',
+        category: 'variable',
         monthOffset,
       } as never);
     }
+
+    pocket.balance += amount;
 
     await this.em.flush();
     return pocket;
