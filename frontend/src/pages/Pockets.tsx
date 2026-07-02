@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Plus, Check, X, AlertCircle } from 'lucide-react';
+import { Plus, Check, X, AlertCircle, Pencil, Trash2 } from 'lucide-react';
 import { PocketIcon } from '../components/PocketIcon';
 import { MiniBar } from '../components/MiniBar';
 import { CloseMonthModal } from '../components/CloseMonthModal';
 import { CreatePocketModal } from '../components/CreatePocketModal';
+import { EditPocketModal } from '../components/EditPocketModal';
+import { DeletePocketDialog } from '../components/DeletePocketDialog';
 import { fmt, safePercent } from '../utils';
 import { closeMonth, transferToPocket } from '../api';
 import type { PocketData, CloseOption } from '../types';
@@ -28,6 +30,8 @@ export function Pockets({
   const [transferAmount, setTransferAmount] = useState('');
   const [showCloseModal, setShowCloseModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editPocket, setEditPocket] = useState<PocketData | null>(null);
+  const [deletePocket, setDeletePocket] = useState<PocketData | null>(null);
 
   const totalIncome = income.reduce((s, i) => s + i.amount, 0);
   const totalExpenses = [...services, ...loans, ...variableExp].reduce((s, i) => s + i.amount, 0);
@@ -97,6 +101,21 @@ export function Pockets({
                 <span>{fmt(p.goal - p.balance)} restante</span>
               </div>
 
+              <div className="flex items-center gap-1 mb-2">
+                <button
+                  onClick={() => setEditPocket(p)}
+                  className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-xs font-semibold border border-border hover:bg-muted transition-colors text-muted-foreground"
+                >
+                  <Pencil className="w-3 h-3" /> Editar
+                </button>
+                <button
+                  onClick={() => setDeletePocket(p)}
+                  className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-xs font-semibold border border-border hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 transition-colors text-muted-foreground"
+                >
+                  <Trash2 className="w-3 h-3" /> Eliminar
+                </button>
+              </div>
+
               {isTransferring ? (
                 <div className="flex items-center gap-2 border-t border-border pt-3">
                   <span className="text-xs text-muted-foreground shrink-0">Transferir:</span>
@@ -147,6 +166,23 @@ export function Pockets({
         <CreatePocketModal
           onClose={() => setShowCreateModal(false)}
           onCreated={onPocketsUpdated}
+        />
+      )}
+
+      {editPocket && (
+        <EditPocketModal
+          pocket={editPocket}
+          onClose={() => setEditPocket(null)}
+          onUpdated={onPocketsUpdated}
+        />
+      )}
+
+      {deletePocket && (
+        <DeletePocketDialog
+          pocket={deletePocket}
+          savings={savings}
+          onClose={() => setDeletePocket(null)}
+          onDeleted={onPocketsUpdated}
         />
       )}
 
