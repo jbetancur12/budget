@@ -12,8 +12,8 @@ import { mountRoutes } from './routes/index.js';
 export function createApp(orm: MikroORM): Express {
   const app = express();
 
-  // Trust proxy (nginx, load balancer)
-  app.set('trust proxy', true);
+  // Trust first proxy (NPM)
+  app.set('trust proxy', 1);
 
   // Security
   app.use(helmet());
