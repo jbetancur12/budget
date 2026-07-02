@@ -38,10 +38,12 @@ export default function App() {
       <Header
         tab={tab}
         monthLabel={monthLabel}
+        monthOffset={monthOffset}
         onPrevMonth={() => setMonthOffset((o: number) => o - 1)}
         onNextMonth={() => setMonthOffset((o: number) => o + 1)}
         onTabChange={setTab}
         onLogout={logout}
+        onMonthPick={setMonthOffset}
       />
 
       <main className="flex-1 overflow-y-auto max-w-7xl w-full mx-auto px-4 sm:px-6 py-4 sm:py-6 pb-24 sm:pb-6">
