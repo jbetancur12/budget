@@ -17,7 +17,7 @@ export function MobileNav({ tab, onTabChange, onLogout }: MobileNavProps) {
   return (
     <nav
       className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur-md border-t border-border shadow-[0_-4px_24px_rgba(0,0,0,0.08)]"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
       <div className="flex">
         {ITEMS.map(({ id, label, icon: Icon }) => {

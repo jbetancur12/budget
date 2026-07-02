@@ -57,7 +57,7 @@ export function Header({
   const desktopLabel = NAV_ITEMS.find((n) => n.id === tab)?.label;
 
   return (
-    <header className="bg-primary text-primary-foreground sticky top-0 z-40 shadow-lg">
+    <header className="bg-primary text-primary-foreground sticky top-0 z-40 shadow-lg pt-[env(safe-area-inset-top)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14 gap-3">
           <div className="flex items-center gap-2.5 shrink-0">
