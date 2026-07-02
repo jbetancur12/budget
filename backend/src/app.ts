@@ -12,6 +12,9 @@ import { mountRoutes } from './routes/index.js';
 export function createApp(orm: MikroORM): Express {
   const app = express();
 
+  // Trust proxy (nginx, load balancer)
+  app.set('trust proxy', true);
+
   // Security
   app.use(helmet());
   app.use(cors({ origin: config.cors.origins }));
