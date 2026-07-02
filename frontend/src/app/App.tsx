@@ -35,7 +35,7 @@ export default function App() {
   } = budgetData;
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col">
+    <div className="h-full bg-background flex flex-col">
       <Header
         tab={tab}
         monthLabel={monthLabel}
