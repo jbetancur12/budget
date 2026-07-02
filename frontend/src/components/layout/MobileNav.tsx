@@ -1,9 +1,10 @@
-import { LayoutDashboard, ArrowLeftRight, PiggyBank } from 'lucide-react';
+import { LayoutDashboard, ArrowLeftRight, PiggyBank, LogOut } from 'lucide-react';
 import type { Tab } from '../../types';
 
 interface MobileNavProps {
   tab: Tab;
   onTabChange: (tab: Tab) => void;
+  onLogout: () => void;
 }
 
 const ITEMS = [
@@ -12,7 +13,7 @@ const ITEMS = [
   { id: 'pockets' as Tab, label: 'Bolsillos', icon: PiggyBank },
 ];
 
-export function MobileNav({ tab, onTabChange }: MobileNavProps) {
+export function MobileNav({ tab, onTabChange, onLogout }: MobileNavProps) {
   return (
     <nav
       className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur-md border-t border-border shadow-[0_-4px_24px_rgba(0,0,0,0.08)]"
@@ -34,6 +35,15 @@ export function MobileNav({ tab, onTabChange }: MobileNavProps) {
             </button>
           );
         })}
+        <button
+          onClick={onLogout}
+          className="flex-1 flex flex-col items-center justify-center gap-1 py-2.5 transition-all active:scale-95"
+        >
+          <div className="w-12 h-7 flex items-center justify-center rounded-full">
+            <LogOut className="w-5 h-5 text-muted-foreground" />
+          </div>
+          <span className="text-[10px] font-bold tracking-wide text-muted-foreground">Salir</span>
+        </button>
       </div>
     </nav>
   );

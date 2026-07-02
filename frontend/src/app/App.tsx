@@ -93,7 +93,7 @@ export default function App() {
         )}
       </main>
 
-      <MobileNav tab={tab} onTabChange={setTab} />
+      <MobileNav tab={tab} onTabChange={setTab} onLogout={logout} />
     </div>
   );
 }

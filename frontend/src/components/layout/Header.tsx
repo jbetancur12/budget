@@ -153,7 +153,7 @@ export function Header({
 
           <button
             onClick={onLogout}
-            className="p-2 rounded-xl hover:bg-white/15 transition-colors text-white/75 hover:text-white shrink-0"
+            className="hidden sm:block p-2 rounded-xl hover:bg-white/15 transition-colors text-white/75 hover:text-white shrink-0"
             title="Cerrar sesión"
           >
             <LogOut className="w-4 h-4" />
