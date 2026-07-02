@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from '../components/layout/Header';
 import { MobileNav } from '../components/layout/MobileNav';
 import { PwaUpdatePrompt } from '../components/PwaUpdatePrompt';
@@ -18,6 +18,17 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('dashboard');
   const [servicesOpen, setServicesOpen] = useState(true);
   const [loansOpen, setLoansOpen] = useState(true);
+
+  // Reset iOS zoom after login transitions
+  useEffect(() => {
+    if (user) {
+      const meta = document.querySelector('meta[name=viewport]');
+      if (meta) {
+        meta.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0');
+        setTimeout(() => meta.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover'), 300);
+      }
+    }
+  }, [user]);
 
   if (loading) {
     return (

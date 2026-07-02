@@ -54,7 +54,7 @@ export function LoginPage() {
             </label>
             <input
               type="email"
-              className="w-full px-4 py-2.5 border border-border rounded-xl bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full px-4 py-2.5 border border-border rounded-xl bg-background text-base focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               placeholder="admin@budget.app"
               {...register('email', { required: 'Email requerido' })}
             />
@@ -70,7 +70,7 @@ export function LoginPage() {
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
-                className="w-full px-4 py-2.5 pr-10 border border-border rounded-xl bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className="w-full px-4 py-2.5 pr-10 border border-border rounded-xl bg-background text-base focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 placeholder="••••••••"
                 {...register('password', { required: 'Contraseña requerida' })}
               />
