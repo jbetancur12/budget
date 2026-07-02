@@ -27,6 +27,8 @@ COPY --from=builder /app/dist ./dist
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json ./
 
+RUN mkdir -p /app/temp && chown -R appuser:appgroup /app
+
 USER appuser
 
 EXPOSE 3001
