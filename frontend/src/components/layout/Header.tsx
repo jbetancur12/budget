@@ -1,4 +1,4 @@
-import { Wallet, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Wallet, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import type { Tab } from '../../types';
 
 interface HeaderProps {
@@ -7,6 +7,7 @@ interface HeaderProps {
   onPrevMonth: () => void;
   onNextMonth: () => void;
   onTabChange: (tab: Tab) => void;
+  onLogout: () => void;
 }
 
 const NAV_ITEMS = [
@@ -15,7 +16,7 @@ const NAV_ITEMS = [
   { id: 'pockets' as Tab, label: 'Bolsillos' },
 ];
 
-export function Header({ tab, monthLabel, onPrevMonth, onNextMonth, onTabChange }: HeaderProps) {
+export function Header({ tab, monthLabel, onPrevMonth, onNextMonth, onTabChange, onLogout }: HeaderProps) {
   const desktopLabel = NAV_ITEMS.find((n) => n.id === tab)?.label;
 
   return (
@@ -66,6 +67,14 @@ export function Header({ tab, monthLabel, onPrevMonth, onNextMonth, onTabChange 
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
+
+          <button
+            onClick={onLogout}
+            className="p-2 rounded-xl hover:bg-white/15 transition-colors text-white/75 hover:text-white shrink-0"
+            title="Cerrar sesión"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
         </div>
       </div>
     </header>
