@@ -122,6 +122,7 @@ export default function App() {
             makeHandlers={makeHandlers}
             search={search}
             onSearchChange={setSearch}
+            onCategoriesChange={() => refresh(monthOffset, search || undefined)}
           />
         )}
 
