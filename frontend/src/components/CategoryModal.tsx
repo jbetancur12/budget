@@ -74,7 +74,7 @@ export function CategoryModal({ onClose }: Props) {
       onClick={onClose}
     >
       <div
-        className="bg-card sm:border border-border sm:rounded-3xl rounded-t-3xl shadow-2xl max-w-md w-full overflow-hidden"
+        className="bg-card sm:border border-border sm:rounded-3xl rounded-t-3xl shadow-2xl max-w-lg w-full overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="px-6 py-5 border-b border-border flex items-center justify-between">
@@ -115,7 +115,7 @@ export function CategoryModal({ onClose }: Props) {
             <input
               value={newBudget}
               onChange={(e) => setNewBudget(formatInput(e.target.value))}
-              className="w-24 border border-border rounded-xl px-3 py-2 text-sm font-mono bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-28 border border-border rounded-xl px-3 py-2 text-sm font-mono bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               placeholder="Presupuesto"
             />
             <button
@@ -156,7 +156,7 @@ export function CategoryModal({ onClose }: Props) {
                         if (e.key === 'Enter') handleUpdate(cat.id);
                         if (e.key === 'Escape') setEditingId(null);
                       }}
-                      className="w-20 border border-primary rounded-lg px-2 py-1 text-sm font-mono bg-card"
+                      className="w-24 border border-primary rounded-lg px-2 py-1 text-sm font-mono bg-card"
                       placeholder="Tope"
                     />
                   </div>
