@@ -48,12 +48,19 @@ export function Dashboard({
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [savingsRate, setSavingsRate] = useState(50);
+  const [debtTotals, setDebtTotals] = useState({ lent: 0, borrowed: 0 });
 
   useEffect(() => {
     api
       .fetchSettings()
       .then((s) => setSavingsRate(s.savingsRate))
       .catch(() => {});
+    api.fetchDebts().then((d) => {
+      setDebtTotals({
+        lent: d.filter((x) => x.type === 'lent').reduce((s, x) => s + x.remainingBalance, 0),
+        borrowed: d.filter((x) => x.type === 'borrowed').reduce((s, x) => s + x.remainingBalance, 0),
+      });
+    }).catch(() => {});
   }, []);
   const totalIncome = income.reduce((s, i) => s + i.amount, 0);
   const totalServices = services.reduce((s, i) => s + i.amount, 0);
@@ -249,6 +256,25 @@ export function Dashboard({
           </button>
         </div>
       </div>
+
+      {(debtTotals.lent > 0 || debtTotals.borrowed > 0) && (
+        <div className="bg-card border border-border rounded-2xl p-4 shadow-sm animate-in animate-in-d2">
+          <div className="flex items-center gap-4 justify-between">
+            {debtTotals.lent > 0 && (
+              <div>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-semibold">Me deben</p>
+                <p className="font-mono font-bold text-chart-2">{fmt(debtTotals.lent)}</p>
+              </div>
+            )}
+            {debtTotals.borrowed > 0 && (
+              <div>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-semibold">Debo</p>
+                <p className="font-mono font-bold text-destructive">{fmt(debtTotals.borrowed)}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {(() => {
         const stats = [
