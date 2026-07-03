@@ -63,7 +63,10 @@ body {
 
 /* iOS PWA status bar area blends with header */
 body {
-  background-color: #1a3a5c;
+  background-color: var(--color-background);
+}
+html.dark body {
+  background-color: var(--color-background);
 }
 
 /* ── Prevent iOS zoom on input focus (Safari requires 16px min) ── */

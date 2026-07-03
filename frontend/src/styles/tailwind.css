@@ -25,16 +25,16 @@
 }
 
 .dark {
-  --color-background: oklch(18% 0.02 280);
-  --color-foreground: oklch(92% 0.01 280);
-  --color-card: oklch(22% 0.02 280);
-  --color-muted: oklch(26% 0.02 280);
-  --color-muted-foreground: oklch(65% 0.02 280);
-  --color-border: oklch(30% 0.02 280);
-  --color-primary: oklch(58% 0.15 250);
-  --color-primary-foreground: oklch(12% 0 0);
-  --color-accent: oklch(65% 0.15 80);
-  --color-accent-foreground: oklch(92% 0 0);
+  --color-background: oklch(15% 0.02 250);
+  --color-foreground: oklch(92% 0.01 250);
+  --color-card: oklch(20% 0.02 250);
+  --color-muted: oklch(25% 0.02 250);
+  --color-muted-foreground: oklch(65% 0.03 250);
+  --color-border: oklch(28% 0.02 250);
+  --color-primary: oklch(60% 0.18 250);
+  --color-primary-foreground: oklch(98% 0 0);
+  --color-accent: oklch(62% 0.15 220);
+  --color-accent-foreground: oklch(98% 0 0);
   --color-destructive: oklch(60% 0.2 25);
-  --color-destructive-foreground: oklch(12% 0 0);
+  --color-destructive-foreground: oklch(98% 0 0);
 }
