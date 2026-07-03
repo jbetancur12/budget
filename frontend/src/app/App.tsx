@@ -18,6 +18,7 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('dashboard');
   const [servicesOpen, setServicesOpen] = useState(true);
   const [loansOpen, setLoansOpen] = useState(true);
+  const [variableOpen, setVariableOpen] = useState(true);
 
   // Reset iOS zoom after login transitions
   useEffect(() => {
@@ -81,8 +82,10 @@ export default function App() {
             monthLabel={monthLabel}
             servicesOpen={servicesOpen}
             loansOpen={loansOpen}
+            variableOpen={variableOpen}
             onToggleServices={() => setServicesOpen((o) => !o)}
             onToggleLoans={() => setLoansOpen((o) => !o)}
+            onToggleVariable={() => setVariableOpen((o) => !o)}
             incomeH={incomeH}
             servicesH={servicesH}
             loansH={loansH}

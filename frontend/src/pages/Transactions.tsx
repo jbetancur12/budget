@@ -10,8 +10,10 @@ interface TransactionsProps {
   monthLabel: string;
   servicesOpen: boolean;
   loansOpen: boolean;
+  variableOpen: boolean;
   onToggleServices: () => void;
   onToggleLoans: () => void;
+  onToggleVariable: () => void;
   incomeH: ItemHandlers;
   servicesH: ItemHandlers;
   loansH: ItemHandlers;
@@ -20,7 +22,7 @@ interface TransactionsProps {
 
 export function Transactions({
   income, services, loans, variableExp, monthLabel,
-  servicesOpen, loansOpen, onToggleServices, onToggleLoans,
+  servicesOpen, loansOpen, variableOpen, onToggleServices, onToggleLoans, onToggleVariable,
   incomeH, servicesH, loansH, variableH,
 }: TransactionsProps) {
   const totalIncome = income.reduce((s, i) => s + i.amount, 0);
@@ -65,7 +67,7 @@ export function Transactions({
           <h2 className="font-bold text-foreground text-sm uppercase tracking-wide">Gastos Variables</h2>
           <span className="ml-auto font-mono text-sm font-bold text-chart-4">{fmt(totalVariable)}</span>
         </div>
-        <TableSection title="Variables" items={variableExp} type="Variable" total={totalVariable} totalColor="text-chart-4" showType {...variableH} />
+        <TableSection title="Variables" items={variableExp} type="Variable" total={totalVariable} totalColor="text-chart-4" collapsible isOpen={variableOpen} onToggle={onToggleVariable} {...variableH} />
       </div>
 
       <div className="bg-accent/10 border border-accent/20 rounded-2xl p-4">
