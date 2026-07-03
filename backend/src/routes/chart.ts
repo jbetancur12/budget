@@ -9,7 +9,7 @@ chartRouter.get(
   '/',
   asyncHandler(async (req, res) => {
     const service = new ChartService(req.orm.em.fork());
-    const history = await service.getHistory();
+    const history = await service.getHistory(req.user!.userId);
     ApiResponse.success(res, history);
   }),
 );

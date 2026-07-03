@@ -18,7 +18,8 @@
     "migrate:list": "tsx node_modules/.bin/mikro-orm migration:list",
     "migrate:create": "tsx node_modules/.bin/mikro-orm migration:create",
     "seed": "tsx src/seed.ts",
-    "seed:prod": "node dist/seed.js"
+    "seed:prod": "node dist/seed.js",
+    "create-user": "tsx src/scripts/create-user.ts"
   },
   "dependencies": {
     "@mikro-orm/core": "^6.4.0",

@@ -24,35 +24,36 @@ interface UpdateItemData {
 export class ItemService {
   constructor(private em: EntityManager) {}
 
-  async findAll(query: ItemQuery) {
-    const where: Record<string, string | number> = {};
+  async findAll(userId: number, query: ItemQuery) {
+    const where: Record<string, string | number> = { user: userId };
     if (query.category) where.category = query.category;
     if (query.monthOffset !== undefined) where.monthOffset = query.monthOffset;
     return this.em.find(Item, where, { orderBy: { id: 'ASC' } });
   }
 
-  async create(data: CreateItemData) {
+  async create(userId: number, data: CreateItemData) {
     const item = this.em.create(Item, {
       name: data.name,
       amount: data.amount ?? 0,
       type: data.type ?? 'Variable' as const,
       category: data.category,
       monthOffset: data.monthOffset ?? 0,
+      user: userId,
     } as never);
     await this.em.flush();
     return item;
   }
 
-  async update(id: number, data: UpdateItemData) {
-    const item = await this.em.findOne(Item, id);
+  async update(userId: number, id: number, data: UpdateItemData) {
+    const item = await this.em.findOne(Item, { id, user: userId });
     if (!item) throw new NotFoundError('Item not found');
     this.em.assign(item, data);
     await this.em.flush();
     return item;
   }
 
-  async delete(id: number) {
-    const item = await this.em.findOne(Item, id);
+  async delete(userId: number, id: number) {
+    const item = await this.em.findOne(Item, { id, user: userId });
     if (!item) throw new NotFoundError('Item not found');
     await this.em.remove(item).flush();
   }

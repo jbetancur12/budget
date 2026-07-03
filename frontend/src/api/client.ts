@@ -33,7 +33,7 @@ export async function request<T>(url: string, options?: RequestInit): Promise<T>
   });
 
   if (!res.ok) {
-    if (res.status === 401) {
+    if (res.status === 401 && token) {
       localStorage.removeItem('budget_auth');
       window.location.href = '/';
     }

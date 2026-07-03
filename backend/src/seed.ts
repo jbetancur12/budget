@@ -10,22 +10,22 @@ async function main() {
   const orm = await initORM();
   const em = orm.em.fork();
 
-  const userCount = await em.count(User, {});
-  if (userCount === 0) {
+  let admin = await em.findOne(User, { email: 'admin@budget.app' });
+  if (!admin) {
     const password = await bcrypt.hash('admin123', 12);
-    em.create(User, {
+    admin = em.create(User, {
       email: 'admin@budget.app',
       password,
       name: 'Admin',
       role: 'admin',
     } as never);
+    await em.flush();
     console.log('Default user created: admin@budget.app / admin123');
   }
 
-  const count = await em.count(Item, {});
+  const count = await em.count(Item, { user: admin.id });
   if (count > 0) {
     console.log('Already seeded, skipping items');
-    await em.flush();
     await orm.close();
     return;
   }
@@ -43,7 +43,7 @@ async function main() {
     { name: 'Gasolina', amount: 350000, type: 'Variable' as const, category: 'variable' as const, monthOffset: 0 },
     { name: 'Parqueadero', amount: 150000, type: 'Variable' as const, category: 'variable' as const, monthOffset: 0 },
   ];
-  for (const d of items) em.create(Item, d as never);
+  for (const d of items) em.create(Item, { ...d, user: admin.id } as never);
 
   const pocketData = [
     { name: 'Fondo de Emergencia', balance: 1200000, goal: 5000000, color: '#3B82F6', icon: 'Shield' as const },
@@ -51,7 +51,7 @@ async function main() {
     { name: 'Inversiones', balance: 3200000, goal: 10000000, color: '#16A34A', icon: 'TrendingUp' as const },
     { name: 'Educación', balance: 180000, goal: 1000000, color: '#F59E0B', icon: 'BookOpen' as const },
   ];
-  for (const d of pocketData) em.create(Pocket, d as never);
+  for (const d of pocketData) em.create(Pocket, { ...d, user: admin.id } as never);
 
   const baseHistory = [
     { monthOffset: -5, monthLabel: 'Feb', totalIncome: 5800000, totalExpenses: 1950000, savings: 1925000 },
@@ -60,7 +60,7 @@ async function main() {
     { monthOffset: -2, monthLabel: 'May', totalIncome: 6200000, totalExpenses: 2250000, savings: 1975000 },
     { monthOffset: -1, monthLabel: 'Jun', totalIncome: 5980000, totalExpenses: 1885000, savings: 2047500 },
   ];
-  for (const d of baseHistory) em.create(MonthlyHistory, d as never);
+  for (const d of baseHistory) em.create(MonthlyHistory, { ...d, user: admin.id } as never);
 
   await em.flush();
   console.log('Seed complete');

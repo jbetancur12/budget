@@ -22,37 +22,38 @@ interface UpdatePocketData {
 export class PocketService {
   constructor(private em: EntityManager) {}
 
-  async findAll() {
-    return this.em.find(Pocket, {}, { orderBy: { id: 'ASC' } });
+  async findAll(userId: number) {
+    return this.em.find(Pocket, { user: userId }, { orderBy: { id: 'ASC' } });
   }
 
-  async create(data: CreatePocketData) {
+  async create(userId: number, data: CreatePocketData) {
     const pocket = this.em.create(Pocket, {
       name: data.name,
       goal: data.goal ?? 0,
       color: data.color ?? '#3B82F6',
       icon: data.icon ?? 'Shield',
+      user: userId,
     } as never);
     await this.em.flush();
     return pocket;
   }
 
-  async update(id: number, data: UpdatePocketData) {
-    const pocket = await this.em.findOne(Pocket, id);
+  async update(userId: number, id: number, data: UpdatePocketData) {
+    const pocket = await this.em.findOne(Pocket, { id, user: userId });
     if (!pocket) throw new NotFoundError('Pocket not found');
     this.em.assign(pocket, data);
     await this.em.flush();
     return pocket;
   }
 
-  async delete(id: number) {
-    const pocket = await this.em.findOne(Pocket, id);
+  async delete(userId: number, id: number) {
+    const pocket = await this.em.findOne(Pocket, { id, user: userId });
     if (!pocket) throw new NotFoundError('Pocket not found');
     await this.em.remove(pocket).flush();
   }
 
-  async transfer(id: number, amount: number, monthOffset?: number) {
-    const pocket = await this.em.findOne(Pocket, id);
+  async transfer(userId: number, id: number, amount: number, monthOffset?: number) {
+    const pocket = await this.em.findOne(Pocket, { id, user: userId });
     if (!pocket) throw new NotFoundError('Pocket not found');
     if (amount === 0) throw new BadRequestError('Amount must be non-zero');
 
@@ -69,6 +70,7 @@ export class PocketService {
           type: 'Variable',
           category: 'income',
           monthOffset,
+          user: userId,
         } as never);
       }
 
@@ -78,7 +80,7 @@ export class PocketService {
 
     // Deposit: take from monthly balance, add to pocket
     if (monthOffset !== undefined) {
-      const items = await this.em.find(Item, { monthOffset });
+      const items = await this.em.find(Item, { monthOffset, user: userId });
       const totalIncome = items.filter((i) => i.category === 'income').reduce((s, i) => s + i.amount, 0);
       const totalExpenses = items.filter((i) => i.category !== 'income').reduce((s, i) => s + i.amount, 0);
       const available = totalIncome - totalExpenses;
@@ -93,6 +95,7 @@ export class PocketService {
         type: 'Variable',
         category: 'variable',
         monthOffset,
+        user: userId,
       } as never);
     }
 

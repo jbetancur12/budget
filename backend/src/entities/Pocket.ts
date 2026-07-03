@@ -1,4 +1,5 @@
-import { Entity, Property, PrimaryKey } from '@mikro-orm/core';
+import { Entity, Property, PrimaryKey, ManyToOne } from '@mikro-orm/core';
+import { User } from './User.js';
 
 export type PocketIcon = 'Shield' | 'Plane' | 'TrendingUp' | 'BookOpen';
 
@@ -6,6 +7,9 @@ export type PocketIcon = 'Shield' | 'Plane' | 'TrendingUp' | 'BookOpen';
 export class Pocket {
   @PrimaryKey()
   id!: number;
+
+  @ManyToOne(() => User)
+  user!: User;
 
   @Property()
   name!: string;

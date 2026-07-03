@@ -12,7 +12,7 @@ closeMonthRouter.post(
   validate(closeMonthSchema),
   asyncHandler(async (req, res) => {
     const service = new CloseMonthService(req.orm.em.fork());
-    const result = await service.execute(req.body);
+    const result = await service.execute(req.user!.userId, req.body);
     ApiResponse.success(res, result);
   }),
 );

@@ -23,12 +23,12 @@ interface CloseMonthInput {
 export class CloseMonthService {
   constructor(private em: EntityManager) {}
 
-  async execute(data: CloseMonthInput) {
+  async execute(userId: number, data: CloseMonthInput) {
     const { closeOption, pocketAmounts, currentMonthOffset = 0 } = data;
     const nextOffset = currentMonthOffset + 1;
 
-    const items = await this.em.find(Item, { monthOffset: currentMonthOffset });
-    const pockets = await this.em.find(Pocket, {});
+    const items = await this.em.find(Item, { monthOffset: currentMonthOffset, user: userId });
+    const pockets = await this.em.find(Pocket, { user: userId });
 
     const totalIncome = items
       .filter((i) => i.category === 'income')
@@ -45,6 +45,7 @@ export class CloseMonthService {
       totalIncome,
       totalExpenses,
       savings,
+      user: userId,
     } as never);
 
     if (closeOption === 'distribute' && pocketAmounts) {
@@ -57,20 +58,20 @@ export class CloseMonthService {
       const distributed = Object.values(pocketAmounts).reduce((s, v) => s + v, 0);
       const leftover = savings - distributed;
       if (leftover > 0) {
-        await this.upsertSaldoAnterior(nextOffset, leftover);
+        await this.upsertSaldoAnterior(userId, nextOffset, leftover);
       }
     } else {
-      await this.upsertSaldoAnterior(nextOffset, savings);
+      await this.upsertSaldoAnterior(userId, nextOffset, savings);
     }
 
-    await this.copyItemsToNextMonth(items, nextOffset);
+    await this.copyItemsToNextMonth(userId, items, nextOffset);
     await this.em.flush();
 
     return { nextOffset };
   }
 
-  private async upsertSaldoAnterior(monthOffset: number, amount: number) {
-    const existing = await this.em.findOne(Item, { name: 'Saldo Anterior', monthOffset } as never);
+  private async upsertSaldoAnterior(userId: number, monthOffset: number, amount: number) {
+    const existing = await this.em.findOne(Item, { name: 'Saldo Anterior', monthOffset, user: userId } as never);
     if (existing) {
       existing.amount += amount;
     } else {
@@ -80,12 +81,13 @@ export class CloseMonthService {
         type: 'Fijo' as const,
         category: 'income' as const,
         monthOffset,
+        user: userId,
       } as never);
     }
   }
 
-  private async copyItemsToNextMonth(items: Item[], nextOffset: number) {
-    const nextMonthItems = await this.em.find(Item, { monthOffset: nextOffset });
+  private async copyItemsToNextMonth(userId: number, items: Item[], nextOffset: number) {
+    const nextMonthItems = await this.em.find(Item, { monthOffset: nextOffset, user: userId });
     const hasRealItems = nextMonthItems.some((i) => i.name !== 'Saldo Anterior');
     if (!hasRealItems) {
       for (const item of items) {
@@ -96,6 +98,7 @@ export class CloseMonthService {
             type: item.type,
             category: item.category,
             monthOffset: nextOffset,
+            user: userId,
           } as never);
         }
       }

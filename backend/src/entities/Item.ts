@@ -1,9 +1,13 @@
-import { Entity, Property, PrimaryKey } from '@mikro-orm/core';
+import { Entity, Property, PrimaryKey, ManyToOne } from '@mikro-orm/core';
+import { User } from './User.js';
 
 @Entity()
 export class Item {
   @PrimaryKey()
   id!: number;
+
+  @ManyToOne(() => User)
+  user!: User;
 
   @Property()
   name!: string;
