@@ -249,30 +249,11 @@ export function Dashboard({
       </div>
 
       {(() => {
-        const stats = [
-          {
-            label: 'Gastos Fijos',
-            value: totalFixed,
-            pct: safePercent(totalFixed, totalExpenses),
-            color: 'bg-chart-1',
-            suffix: 'del gasto total',
-          },
-          {
-            label: 'Gastos Variables',
-            value: totalVariable,
-            pct: safePercent(totalVariable, totalExpenses),
-            color: 'bg-chart-2',
-            suffix: 'del gasto total',
-          },
-          {
-            label: 'Tasa de Ahorro',
-            value: savings,
-            pct: safePercent(savings, totalIncome),
-            color: 'bg-accent',
-            suffix: 'sobre ingresos',
-            green: true,
-          },
-        ] as const;
+const stats = [
+  { label: 'Gastos Fijos', value: totalFixed, pct: safePercent(totalFixed, totalExpenses), color: 'bg-chart-1', suffix: 'del gasto total', green: false },
+  { label: 'Gastos Variables', value: totalVariable, pct: safePercent(totalVariable, totalExpenses), color: 'bg-chart-2', suffix: 'del gasto total', green: false },
+  { label: 'Tasa de Ahorro', value: savings, pct: safePercent(savings, totalIncome), color: 'bg-accent', suffix: 'sobre ingresos', green: true },
+] as const;
         return (
           <>
             <div className="sm:hidden bg-card border border-border rounded-2xl overflow-hidden shadow-sm animate-in animate-in-d3">
@@ -287,7 +268,7 @@ export function Dashboard({
                   </span>
                   <div className="text-right shrink-0">
                     <p
-                      className={`font-mono text-sm font-bold ${green ? 'text-accent-foreground' : 'text-foreground'}`}
+                      className={`font-mono text-sm font-bold text-foreground`}
                     >
                       {green ? `${pct}%` : fmt(value)}
                     </p>
@@ -316,7 +297,7 @@ export function Dashboard({
                     {label}
                   </p>
                   <p
-                    className={`font-mono font-bold text-lg ${green ? 'text-accent-foreground' : 'text-foreground'}`}
+                    className={`font-mono font-bold text-lg text-foreground`}
                   >
                     {green ? `${pct}%` : fmt(value)}
                   </p>
