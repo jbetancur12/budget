@@ -23,7 +23,7 @@ export function SummaryCard({
   tooltip,
 }: SummaryCardProps) {
   return (
-    <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden animate-in">
+    <div className="bg-card border border-border rounded-2xl shadow-sm animate-in">
       <div className="sm:hidden p-3">
         <div className="flex items-center gap-2 mb-2">
           <div
