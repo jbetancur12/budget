@@ -8,6 +8,7 @@ export async function fetchCategories(): Promise<CategoryData[]> {
 export async function createCategory(data: {
   name: string;
   type: 'income' | 'expense';
+  budget?: number | null;
 }): Promise<CategoryData> {
   return request<CategoryData>('/categories', {
     method: 'POST',
@@ -15,7 +16,10 @@ export async function createCategory(data: {
   });
 }
 
-export async function updateCategory(id: number, data: { name?: string }): Promise<CategoryData> {
+export async function updateCategory(
+  id: number,
+  data: { name?: string; budget?: number | null },
+): Promise<CategoryData> {
   return request<CategoryData>(`/categories/${id}`, {
     method: 'PUT',
     body: JSON.stringify(data),

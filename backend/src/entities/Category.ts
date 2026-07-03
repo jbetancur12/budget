@@ -12,6 +12,9 @@ export class Category {
   @Property({ type: 'string' })
   type!: 'income' | 'expense';
 
+  @Property({ nullable: true })
+  budget?: number;
+
   @ManyToOne(() => User)
   user!: User;
 

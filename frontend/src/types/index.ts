@@ -11,6 +11,7 @@ export interface CategoryData {
   id: number;
   name: string;
   type: 'income' | 'expense';
+  budget?: number | null;
 }
 
 export interface ItemData {

@@ -151,20 +151,38 @@ export function Transactions({
         </div>
         {expenseCategories.map((cat) => {
           const items = itemsByCategory[cat.id] ?? [];
+          const total = items.reduce((s, i) => s + i.amount, 0);
           const h = makeHandlers(cat.id, 'Fijo');
+          const pct = cat.budget && cat.budget > 0 ? Math.round((total / cat.budget) * 100) : 0;
+          const barColor = pct > 100 ? 'bg-destructive' : pct > 80 ? 'bg-yellow-500' : 'bg-chart-2';
           return (
-            <TableSection
-              key={cat.id}
-              title={cat.name}
-              items={items}
-              type="Fijo"
-              total={items.reduce((s, i) => s + i.amount, 0)}
-              totalColor="text-chart-4"
-              collapsible
-              isOpen={openCategories[cat.id] !== false}
-              onToggle={() => onToggleCategory(cat.id)}
-              {...h}
-            />
+            <div key={cat.id}>
+              <TableSection
+                title={cat.name}
+                items={items}
+                type="Fijo"
+                total={total}
+                totalColor="text-chart-4"
+                collapsible
+                isOpen={openCategories[cat.id] !== false}
+                onToggle={() => onToggleCategory(cat.id)}
+                {...h}
+              />
+              {cat.budget && cat.budget > 0 && (
+                <div className="px-4 pb-3 -mt-2">
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+                    <span>{pct}% usado</span>
+                    <span>Tope: {fmt(cat.budget)}</span>
+                  </div>
+                  <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all ${barColor}`}
+                      style={{ width: `${Math.min(100, pct)}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           );
         })}
       </div>

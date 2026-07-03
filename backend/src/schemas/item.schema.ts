@@ -49,12 +49,14 @@ export const createCategorySchema = z.object({
   body: z.object({
     name: z.string().min(1, 'Name is required'),
     type: z.enum(['income', 'expense']),
+    budget: z.number().int().nullable().optional(),
   }),
 });
 
 export const updateCategorySchema = z.object({
   body: z.object({
     name: z.string().min(1).optional(),
+    budget: z.number().int().nullable().optional(),
   }),
   params: z.object({
     id: z.string().regex(/^\d+$/, 'ID must be a number'),

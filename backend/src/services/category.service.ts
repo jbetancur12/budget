@@ -10,17 +10,21 @@ export class CategoryService {
     return this.em.find(Category, { user: userId }, { orderBy: { id: 'ASC' } });
   }
 
-  async create(userId: number, data: { name: string; type: 'income' | 'expense' }) {
+  async create(
+    userId: number,
+    data: { name: string; type: 'income' | 'expense'; budget?: number | null },
+  ) {
     const category = this.em.create(Category, {
       name: data.name,
       type: data.type,
+      budget: data.budget ?? null,
       user: userId,
     } as never);
     await this.em.flush();
     return category;
   }
 
-  async update(userId: number, id: number, data: { name?: string }) {
+  async update(userId: number, id: number, data: { name?: string; budget?: number | null }) {
     const category = await this.em.findOne(Category, { id, user: userId });
     if (!category) throw new NotFoundError('Category not found');
     this.em.assign(category, data);

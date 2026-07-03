@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, Plus, Pencil, Trash2 } from 'lucide-react';
+import { formatInput, parseAmount, fmt } from '../utils';
 import * as api from '../api';
 import type { CategoryData } from '../types';
 
@@ -11,8 +12,10 @@ export function CategoryModal({ onClose }: Props) {
   const [categories, setCategories] = useState<CategoryData[]>([]);
   const [newName, setNewName] = useState('');
   const [newType, setNewType] = useState<'income' | 'expense'>('expense');
+  const [newBudget, setNewBudget] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editName, setEditName] = useState('');
+  const [editBudget, setEditBudget] = useState('');
   const [error, setError] = useState('');
 
   const load = async () => {
@@ -28,7 +31,11 @@ export function CategoryModal({ onClose }: Props) {
     if (!newName.trim()) return;
     setError('');
     try {
-      await api.createCategory({ name: newName.trim(), type: newType });
+      await api.createCategory({
+        name: newName.trim(),
+        type: newType,
+        budget: parseAmount(newBudget) || null,
+      });
       setNewName('');
       await load();
     } catch (e: unknown) {
@@ -40,7 +47,10 @@ export function CategoryModal({ onClose }: Props) {
     if (!editName.trim()) return;
     setError('');
     try {
-      await api.updateCategory(id, { name: editName.trim() });
+      await api.updateCategory(id, {
+        name: editName.trim(),
+        budget: parseAmount(editBudget) || null,
+      });
       setEditingId(null);
       await load();
     } catch (e: unknown) {
@@ -102,6 +112,12 @@ export function CategoryModal({ onClose }: Props) {
               className="flex-1 border border-border rounded-xl px-3 py-2 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               placeholder="Nueva categoría..."
             />
+            <input
+              value={newBudget}
+              onChange={(e) => setNewBudget(formatInput(e.target.value))}
+              className="w-24 border border-border rounded-xl px-3 py-2 text-sm font-mono bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              placeholder="Presupuesto"
+            />
             <button
               onClick={handleCreate}
               className="p-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
@@ -122,35 +138,58 @@ export function CategoryModal({ onClose }: Props) {
                   {cat.type === 'income' ? 'Ingreso' : 'Gasto'}
                 </span>
                 {editingId === cat.id ? (
-                  <input
-                    autoFocus
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    onBlur={() => handleUpdate(cat.id)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleUpdate(cat.id);
-                      if (e.key === 'Escape') setEditingId(null);
-                    }}
-                    className="flex-1 border border-primary rounded-lg px-2 py-1 text-sm bg-card"
-                  />
+                  <div className="flex-1 flex gap-2 items-center">
+                    <input
+                      autoFocus
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      onBlur={() => handleUpdate(cat.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleUpdate(cat.id);
+                        if (e.key === 'Escape') setEditingId(null);
+                      }}
+                      className="flex-1 border border-primary rounded-lg px-2 py-1 text-sm bg-card"
+                    />
+                    <input
+                      value={editBudget}
+                      onChange={(e) => setEditBudget(formatInput(e.target.value))}
+                      onBlur={() => handleUpdate(cat.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleUpdate(cat.id);
+                        if (e.key === 'Escape') setEditingId(null);
+                      }}
+                      className="w-20 border border-primary rounded-lg px-2 py-1 text-sm font-mono bg-card"
+                      placeholder="Tope"
+                    />
+                  </div>
                 ) : (
-                  <span className="flex-1 text-sm text-foreground">{cat.name}</span>
+                  <div className="flex-1 flex items-center gap-2 min-w-0">
+                    <span className="text-sm text-foreground truncate">{cat.name}</span>
+                    {cat.type === 'expense' && cat.budget ? (
+                      <span className="text-[10px] font-mono text-muted-foreground shrink-0">
+                        {fmt(cat.budget)}
+                      </span>
+                    ) : null}
+                  </div>
                 )}
-                <button
-                  onClick={() => {
-                    setEditingId(cat.id);
-                    setEditName(cat.name);
-                  }}
-                  className="p-1 rounded-lg text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-all"
-                >
-                  <Pencil className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => handleDelete(cat.id)}
-                  className="p-1 rounded-lg text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-all"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+                <div className="flex gap-0.5 shrink-0">
+                  <button
+                    onClick={() => {
+                      setEditingId(cat.id);
+                      setEditName(cat.name);
+                      setEditBudget(formatInput(String(cat.budget ?? '')));
+                    }}
+                    className="p-1 rounded-lg text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-all"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(cat.id)}
+                    className="p-1 rounded-lg text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-all"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
