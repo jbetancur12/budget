@@ -36,7 +36,39 @@ export class ItemService {
     if (query.categoryId !== undefined) where.category = query.categoryId;
     if (query.monthOffset !== undefined) where.monthOffset = query.monthOffset;
     if (query.search) where.name = { $ilike: `%${query.search}%` };
-    return this.em.find(Item, where, { orderBy: { date: 'DESC' }, populate: ['category'] });
+
+    const items = await this.em.find(Item, where, { orderBy: { date: 'DESC' }, populate: ['category'] });
+
+    // Auto-populate recurring items when navigating to an empty month
+    if (items.length === 0 && query.monthOffset !== undefined && !query.search) {
+      const recurring = await this.em.find(Item, { user: userId, recurring: true }, { populate: ['category'] });
+      const existingNames = new Set<string>();
+      let created = false;
+
+      for (const r of recurring) {
+        if (!existingNames.has(r.name)) {
+          existingNames.add(r.name);
+          this.em.create(Item, {
+            name: r.name,
+            amount: r.amount,
+            type: r.type,
+            category: r.category.id,
+            monthOffset: query.monthOffset,
+            user: userId,
+            date: new Date().toISOString().slice(0, 10),
+            recurring: true,
+          } as never);
+          created = true;
+        }
+      }
+
+      if (created) {
+        await this.em.flush();
+        return this.em.find(Item, where, { orderBy: { date: 'DESC' }, populate: ['category'] });
+      }
+    }
+
+    return items;
   }
 
   async create(userId: number, data: CreateItemData) {
