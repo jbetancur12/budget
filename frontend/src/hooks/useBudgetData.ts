@@ -42,15 +42,16 @@ export function useBudgetData(monthOffset: number | null) {
     loading: true,
     error: null,
   });
+  const [search, setSearch] = useState('');
 
-  const refresh = useCallback(async (offset: number) => {
+  const refresh = useCallback(async (offset: number, searchTerm?: string) => {
     setData((prev) => ({ ...prev, loading: true, error: null }));
     try {
       const [inc, svc, lns, varExp, pck, chart] = await Promise.all([
-        api.fetchItems('income', offset),
-        api.fetchItems('services', offset),
-        api.fetchItems('loans', offset),
-        api.fetchItems('variable', offset),
+        api.fetchItems('income', offset, searchTerm),
+        api.fetchItems('services', offset, searchTerm),
+        api.fetchItems('loans', offset, searchTerm),
+        api.fetchItems('variable', offset, searchTerm),
         api.fetchPockets(),
         api.fetchChartHistory(),
       ]);
@@ -75,8 +76,8 @@ export function useBudgetData(monthOffset: number | null) {
 
   useEffect(() => {
     if (monthOffset === null) return;
-    refresh(monthOffset);
-  }, [monthOffset, refresh]);
+    refresh(monthOffset, search || undefined);
+  }, [monthOffset, search, refresh]);
 
   const makeHandlers = useCallback(
     (category: string, type: ItemType): ItemHandlers => {
@@ -92,8 +93,13 @@ export function useBudgetData(monthOffset: number | null) {
           const items = await loadCategory(category, offset);
           setData((prev) => updateCategory(prev, category, items));
         },
-        onAdd: async (name: string, amount: number, date?: string) => {
-          await api.createItem({ name, amount, type, category, monthOffset: offset, date });
+        onAdd: async (name: string, amount: number, date?: string, recurring?: boolean) => {
+          await api.createItem({ name, amount, type, category, monthOffset: offset, date, recurring });
+          const items = await loadCategory(category, offset);
+          setData((prev) => updateCategory(prev, category, items));
+        },
+        onRecurringToggle: async (id: number, recurring: boolean) => {
+          await api.updateItem(id, { recurring });
           const items = await loadCategory(category, offset);
           setData((prev) => updateCategory(prev, category, items));
         },
@@ -112,5 +118,5 @@ export function useBudgetData(monthOffset: number | null) {
     setData((prev) => ({ ...prev, pockets }));
   }, []);
 
-  return { ...data, incomeH, servicesH, loansH, variableH, updatePockets };
+  return { ...data, incomeH, servicesH, loansH, variableH, updatePockets, search, setSearch };
 }

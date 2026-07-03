@@ -18,7 +18,8 @@ interface TableSectionProps {
   onToggle?: () => void;
   onAmountChange: (id: number, amount: number) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
-  onAdd: (name: string, amount: number, date?: string) => Promise<void>;
+  onAdd: (name: string, amount: number, date?: string, recurring?: boolean) => Promise<void>;
+  onRecurringToggle?: (id: number, recurring: boolean) => Promise<void>;
 }
 
 export function TableSection({
@@ -34,6 +35,7 @@ export function TableSection({
   onAmountChange,
   onDelete,
   onAdd,
+  onRecurringToggle,
 }: TableSectionProps) {
   const [adding, setAdding] = useState(false);
   const [deleting, setDeleting] = useState<{ id: number; name: string } | null>(null);
@@ -69,14 +71,15 @@ export function TableSection({
                   onAmountChange={onAmountChange}
                   onDelete={(id) => setDeleting({ id, name: item.name })}
                   showType={showType}
+                  onRecurringToggle={onRecurringToggle}
                 />
               ))}
               {adding && (
                 <AddRow
                   type={type}
                   showType={showType}
-                  onAdd={(name, amount, date) => {
-                    onAdd(name, amount, date);
+                  onAdd={(name, amount, date, recurring) => {
+                    onAdd(name, amount, date, recurring);
                     setAdding(false);
                   }}
                   onCancel={() => setAdding(false)}

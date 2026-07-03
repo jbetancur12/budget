@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Check, X } from 'lucide-react';
+import { Check, X, RefreshCw } from 'lucide-react';
 import { parseAmount, formatInput } from '../utils';
 import type { ItemType } from '../types';
 
 interface AddRowProps {
   type: ItemType;
-  onAdd: (name: string, amount: number, date?: string) => void;
+  onAdd: (name: string, amount: number, date?: string, recurring?: boolean) => void;
   onCancel: () => void;
   showType?: boolean;
 }
@@ -14,10 +14,11 @@ export function AddRow({ type: _type, onAdd, onCancel, showType }: AddRowProps) 
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [recurring, setRecurring] = useState(false);
 
   const commit = () => {
     if (!name.trim()) return;
-    onAdd(name.trim(), parseAmount(amount), date);
+    onAdd(name.trim(), parseAmount(amount), date, recurring);
   };
 
   return (
@@ -56,6 +57,16 @@ export function AddRow({ type: _type, onAdd, onCancel, showType }: AddRowProps) 
         />
       </td>
       {showType && <td className="hidden sm:table-cell" />}
+      <td className="py-2 px-1 w-10">
+        <button
+          type="button"
+          onClick={() => setRecurring((o) => !o)}
+          className={`p-1.5 rounded-lg transition-colors ${recurring ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+          title="Recurrente"
+        >
+          <RefreshCw className={`w-4 h-4 ${recurring ? 'stroke-[2.5]' : ''}`} />
+        </button>
+      </td>
       <td className="py-2 px-3 w-16">
         <div className="flex items-center gap-1">
           <button

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, RefreshCw } from 'lucide-react';
 import { fmt, parseAmount, formatInput } from '../utils';
 import type { Item } from '../types';
 
@@ -8,9 +8,10 @@ interface EditableRowProps {
   onAmountChange: (id: number, amount: number) => void;
   onDelete: (id: number) => void;
   showType?: boolean;
+  onRecurringToggle?: (id: number, recurring: boolean) => Promise<void>;
 }
 
-export function EditableRow({ item, onAmountChange, onDelete, showType }: EditableRowProps) {
+export function EditableRow({ item, onAmountChange, onDelete, showType, onRecurringToggle }: EditableRowProps) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState('');
 
@@ -26,7 +27,20 @@ export function EditableRow({ item, onAmountChange, onDelete, showType }: Editab
 
   return (
     <tr className="group border-b border-border/40 last:border-0 hover:bg-primary/[0.03] transition-colors">
-      <td className="py-2.5 px-4 text-sm text-foreground">{item.name}</td>
+      <td className="py-2.5 px-4 text-sm text-foreground">
+        <div className="flex items-center gap-1.5">
+          {item.name}
+          {onRecurringToggle && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onRecurringToggle(item.id, !item.recurring); }}
+              className={`p-0.5 rounded transition-colors ${item.recurring ? 'text-primary' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
+              title={item.recurring ? 'Recurrente' : 'No recurrente'}
+            >
+              <RefreshCw className={`w-3 h-3 ${item.recurring ? 'stroke-[2.5]' : ''}`} />
+            </button>
+          )}
+        </div>
+      </td>
       <td className="py-2.5 px-4 text-xs text-muted-foreground w-28">
         {item.date?.slice(0, 10)}
       </td>

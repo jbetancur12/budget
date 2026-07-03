@@ -15,6 +15,7 @@ export interface ItemData {
   category: ItemCategory;
   monthOffset: number;
   date: string;
+  recurring: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -49,5 +50,6 @@ export interface ChartRow {
 export interface ItemHandlers {
   onAmountChange: (id: number, amount: number) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
-  onAdd: (name: string, amount: number, date?: string) => Promise<void>;
+  onAdd: (name: string, amount: number, date?: string, recurring?: boolean) => Promise<void>;
+  onRecurringToggle?: (id: number, recurring: boolean) => Promise<void>;
 }

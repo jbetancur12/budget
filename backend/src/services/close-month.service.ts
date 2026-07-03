@@ -65,6 +65,7 @@ export class CloseMonthService {
     }
 
     await this.copyItemsToNextMonth(userId, items, nextOffset);
+    await this.copyRecurringToNextMonth(userId, nextOffset);
     await this.em.flush();
 
     return { nextOffset };
@@ -103,6 +104,27 @@ export class CloseMonthService {
             date: new Date().toISOString().slice(0, 10),
           } as never);
         }
+      }
+    }
+  }
+
+  private async copyRecurringToNextMonth(userId: number, nextOffset: number) {
+    const recurring = await this.em.find(Item, { user: userId, recurring: true });
+    const existing = await this.em.find(Item, { monthOffset: nextOffset, user: userId });
+    const existingNames = new Set(existing.map((i) => i.name));
+
+    for (const item of recurring) {
+      if (!existingNames.has(item.name)) {
+        this.em.create(Item, {
+          name: item.name,
+          amount: item.amount,
+          type: item.type,
+          category: item.category,
+          monthOffset: nextOffset,
+          user: userId,
+          date: new Date().toISOString().slice(0, 10),
+          recurring: true,
+        } as never);
       }
     }
   }

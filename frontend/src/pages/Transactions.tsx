@@ -1,3 +1,4 @@
+import { Search } from 'lucide-react';
 import { TableSection } from '../components/TableSection';
 import { fmt } from '../utils';
 import type { ItemData, ItemHandlers } from '../types';
@@ -20,12 +21,14 @@ interface TransactionsProps {
   servicesH: ItemHandlers;
   loansH: ItemHandlers;
   variableH: ItemHandlers;
+  search?: string;
+  onSearchChange?: (value: string) => void;
 }
 
 export function Transactions({
   income, services, loans, variableExp, monthLabel,
   servicesOpen, loansOpen, variableOpen, incomeOpen, onToggleServices, onToggleLoans, onToggleVariable, onToggleIncome,
-  incomeH, servicesH, loansH, variableH,
+  incomeH, servicesH, loansH, variableH, search, onSearchChange,
 }: TransactionsProps) {
   const totalIncome = income.reduce((s, i) => s + i.amount, 0);
   const totalServices = services.reduce((s, i) => s + i.amount, 0);
@@ -37,12 +40,25 @@ export function Transactions({
 
   return (
     <div className="max-w-2xl">
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex items-start justify-between mb-4">
         <div>
           <h1 className="text-xl font-bold text-foreground">Transacciones</h1>
           <p className="text-sm text-muted-foreground">{monthLabel}</p>
         </div>
       </div>
+
+      {onSearchChange && (
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <input
+            type="text"
+            value={search ?? ''}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 border border-border rounded-xl bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-muted-foreground/60"
+            placeholder="Buscar items..."
+          />
+        </div>
+      )}
 
       <div className="mb-5">
         <div className="flex items-center gap-2 mb-2.5">

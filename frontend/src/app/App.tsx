@@ -45,6 +45,7 @@ export default function App() {
   const {
     income, services, loans, variableExp, pockets, chartHistory,
     incomeH, servicesH, loansH, variableH, updatePockets,
+    search, setSearch,
   } = budgetData;
 
   return (
@@ -93,6 +94,8 @@ export default function App() {
             servicesH={servicesH}
             loansH={loansH}
             variableH={variableH}
+            search={search}
+            onSearchChange={setSearch}
           />
         )}
 

@@ -27,6 +27,9 @@ export class Item {
   @Property({ columnType: 'date', defaultRaw: 'CURRENT_DATE' })
   date!: string;
 
+  @Property({ default: false })
+  recurring!: boolean;
+
   @Property({ onCreate: () => new Date() })
   createdAt!: Date;
 

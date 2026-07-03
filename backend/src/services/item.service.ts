@@ -5,6 +5,7 @@ import { NotFoundError } from '../utils/errors.js';
 interface ItemQuery {
   category?: string;
   monthOffset?: number;
+  search?: string;
 }
 
 interface CreateItemData {
@@ -14,21 +15,24 @@ interface CreateItemData {
   category: Item['category'];
   monthOffset?: number;
   date?: string;
+  recurring?: boolean;
 }
 
 interface UpdateItemData {
   name?: string;
   amount?: number;
   type?: Item['type'];
+  recurring?: boolean;
 }
 
 export class ItemService {
   constructor(private em: EntityManager) {}
 
   async findAll(userId: number, query: ItemQuery) {
-    const where: Record<string, string | number> = { user: userId };
+    const where: Record<string, unknown> = { user: userId };
     if (query.category) where.category = query.category;
     if (query.monthOffset !== undefined) where.monthOffset = query.monthOffset;
+    if (query.search) where.name = { $ilike: `%${query.search}%` };
     return this.em.find(Item, where, { orderBy: { id: 'ASC' } });
   }
 
@@ -40,6 +44,7 @@ export class ItemService {
       category: data.category,
       monthOffset: data.monthOffset ?? 0,
       date: data.date ?? new Date().toISOString().slice(0, 10),
+      recurring: data.recurring ?? false,
       user: userId,
     } as never);
     await this.em.flush();
