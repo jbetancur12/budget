@@ -156,7 +156,7 @@ export function useBudgetData(monthOffset: number | null) {
       monthOffset: item.monthOffset,
       date: item.date,
       recurring: item.recurring,
-      notes: item.notes,
+      ...(item.notes ? { notes: item.notes } : {}),
     });
     deletedRef.current = null;
     setDeletedItem(null);
