@@ -12,6 +12,7 @@ export const createItemSchema = z.object({
       .regex(/^\d{4}-\d{2}-\d{2}$/)
       .optional(),
     recurring: z.boolean().optional().default(false),
+    notes: z.string().optional(),
   }),
 });
 
@@ -26,6 +27,7 @@ export const updateItemSchema = z.object({
       .string()
       .regex(/^\d{4}-\d{2}-\d{2}$/)
       .optional(),
+    notes: z.string().optional(),
   }),
   params: z.object({
     id: z.string().regex(/^\d+$/, 'ID must be a number'),

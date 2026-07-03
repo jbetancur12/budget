@@ -2,3 +2,39 @@
 @source '../**/*.{js,ts,jsx,tsx}';
 
 @import 'tw-animate-css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-background: oklch(98% 0.005 280);
+  --color-foreground: oklch(22% 0.04 280);
+  --color-card: oklch(100% 0 0);
+  --color-muted: oklch(94% 0.01 280);
+  --color-muted-foreground: oklch(55% 0.03 280);
+  --color-border: oklch(90% 0.01 280);
+  --color-primary: oklch(42% 0.12 250);
+  --color-primary-foreground: oklch(98% 0 0);
+  --color-accent: oklch(70% 0.15 80);
+  --color-accent-foreground: oklch(30% 0.1 80);
+  --color-destructive: oklch(55% 0.2 25);
+  --color-destructive-foreground: oklch(98% 0 0);
+  --color-chart-1: oklch(55% 0.15 25);
+  --color-chart-2: oklch(52% 0.12 160);
+  --color-chart-3: oklch(60% 0.15 280);
+  --color-chart-4: oklch(50% 0.15 0);
+}
+
+.dark {
+  --color-background: oklch(18% 0.02 280);
+  --color-foreground: oklch(92% 0.01 280);
+  --color-card: oklch(22% 0.02 280);
+  --color-muted: oklch(26% 0.02 280);
+  --color-muted-foreground: oklch(65% 0.02 280);
+  --color-border: oklch(30% 0.02 280);
+  --color-primary: oklch(58% 0.15 250);
+  --color-primary-foreground: oklch(12% 0 0);
+  --color-accent: oklch(65% 0.15 80);
+  --color-accent-foreground: oklch(92% 0 0);
+  --color-destructive: oklch(60% 0.2 25);
+  --color-destructive-foreground: oklch(12% 0 0);
+}

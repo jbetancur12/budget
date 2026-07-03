@@ -17,6 +17,9 @@ export class User {
   @Property({ default: 'user' })
   role!: string;
 
+  @Property({ default: 50 })
+  savingsRate!: number;
+
   @Property({ nullable: true })
   refreshToken?: string;
 

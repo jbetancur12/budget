@@ -37,6 +37,7 @@ export function useBudgetData(monthOffset: number | null) {
     error: null,
   });
   const [search, setSearch] = useState('');
+  const [lastDeleted, setLastDeleted] = useState<ItemData | null>(null);
 
   const refresh = useCallback(async (offset: number, searchTerm?: string) => {
     setData((prev) => ({ ...prev, loading: true, error: null }));
@@ -97,10 +98,20 @@ export function useBudgetData(monthOffset: number | null) {
           refresh(offset, search || undefined);
         },
         onDelete: async (id: number) => {
+          const item = Object.values(data.itemsByCategory)
+            .flat()
+            .find((i) => i.id === id);
+          if (item) setLastDeleted(item);
           await api.deleteItem(id);
           refresh(offset, search || undefined);
         },
-        onAdd: async (name: string, amount: number, date?: string, recurring?: boolean) => {
+        onAdd: async (
+          name: string,
+          amount: number,
+          date?: string,
+          recurring?: boolean,
+          notes?: string,
+        ) => {
           await api.createItem({
             name,
             amount,
@@ -109,7 +120,16 @@ export function useBudgetData(monthOffset: number | null) {
             monthOffset: offset,
             date,
             recurring,
+            notes,
           });
+          refresh(offset, search || undefined);
+        },
+        onRecurringToggle: async (id: number, recurring: boolean) => {
+          await api.updateItem(id, { recurring });
+          refresh(offset, search || undefined);
+        },
+        onNotesChange: async (id: number, notes: string) => {
+          await api.updateItem(id, { notes });
           refresh(offset, search || undefined);
         },
         onRecurringToggle: async (id: number, recurring: boolean) => {
@@ -118,7 +138,7 @@ export function useBudgetData(monthOffset: number | null) {
         },
       };
     },
-    [monthOffset, search, refresh],
+    [monthOffset, search, refresh, data],
   );
 
   const updatePockets = useCallback(async () => {
@@ -126,5 +146,34 @@ export function useBudgetData(monthOffset: number | null) {
     setData((prev) => ({ ...prev, pockets }));
   }, []);
 
-  return { ...data, search, setSearch, makeHandlers, updatePockets, refresh };
+  const undoDelete = useCallback(async () => {
+    const item = lastDeleted;
+    if (!item) return;
+    await api.createItem({
+      name: item.name,
+      amount: item.amount,
+      type: item.type,
+      categoryId: item.category.id,
+      monthOffset: item.monthOffset,
+      date: item.date,
+      recurring: item.recurring,
+      notes: item.notes,
+    });
+    setLastDeleted(null);
+    if (monthOffset !== null) refresh(monthOffset, search || undefined);
+  }, [lastDeleted, monthOffset, search, refresh]);
+
+  const clearLastDeleted = useCallback(() => setLastDeleted(null), []);
+
+  return {
+    ...data,
+    search,
+    setSearch,
+    makeHandlers,
+    updatePockets,
+    refresh,
+    lastDeleted,
+    undoDelete,
+    clearLastDeleted,
+  };
 }

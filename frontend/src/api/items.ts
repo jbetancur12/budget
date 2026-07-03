@@ -20,6 +20,7 @@ export async function createItem(data: {
   monthOffset: number;
   date?: string;
   recurring?: boolean;
+  notes?: string;
 }): Promise<ItemData> {
   return request<ItemData>('/items', {
     method: 'POST',

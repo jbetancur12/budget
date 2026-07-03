@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Header } from '../components/layout/Header';
 import { MobileNav } from '../components/layout/MobileNav';
 import { PwaUpdatePrompt } from '../components/PwaUpdatePrompt';
+import { Toast } from '../components/Toast';
 import { Dashboard } from '../pages/Dashboard';
 import { Transactions } from '../pages/Transactions';
 import { Pockets } from '../pages/Pockets';
@@ -61,6 +62,9 @@ export default function App() {
     makeHandlers,
     updatePockets,
     refresh,
+    lastDeleted,
+    undoDelete,
+    clearLastDeleted,
   } = budgetData;
 
   // Computed from categories for backward compat with Dashboard/Pockets
@@ -139,6 +143,13 @@ export default function App() {
 
       <MobileNav tab={tab} onTabChange={setTab} onLogout={logout} />
       <PwaUpdatePrompt />
+      {lastDeleted && (
+        <Toast
+          message={`"${lastDeleted.name}" eliminado`}
+          action={{ label: 'Deshacer', onClick: undoDelete }}
+          onDone={clearLastDeleted}
+        />
+      )}
     </div>
   );
 }

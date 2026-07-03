@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Wallet, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
+import { Wallet, ChevronLeft, ChevronRight, LogOut, Moon, Sun } from 'lucide-react';
 import type { Tab } from '../../types';
 
 const MONTHS = [
@@ -34,6 +34,15 @@ const NAV_ITEMS = [
   { id: 'pockets' as Tab, label: 'Bolsillos' },
 ];
 
+function useDarkMode() {
+  const [dark, setDark] = useState(() => localStorage.getItem('dark') === 'true');
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', dark);
+    localStorage.setItem('dark', String(dark));
+  }, [dark]);
+  return [dark, () => setDark((o) => !o)] as const;
+}
+
 export function Header({
   tab,
   monthLabel,
@@ -45,6 +54,7 @@ export function Header({
   onMonthPick,
 }: HeaderProps) {
   const [open, setOpen] = useState(false);
+  const [dark, toggleDark] = useDarkMode();
   const [viewYear, setViewYear] = useState(() => {
     const rawIdx = 6 + monthOffset;
     return 2026 + Math.floor(rawIdx / 12);
@@ -170,6 +180,13 @@ export function Header({
             )}
           </div>
 
+          <button
+            onClick={toggleDark}
+            className="p-2 rounded-xl hover:bg-white/15 transition-colors text-white/75 hover:text-white shrink-0"
+            title={dark ? 'Modo claro' : 'Modo oscuro'}
+          >
+            {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
           <button
             onClick={onLogout}
             className="hidden sm:block p-2 rounded-xl hover:bg-white/15 transition-colors text-white/75 hover:text-white shrink-0"

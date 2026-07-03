@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Wallet, PiggyBank, Plus } from 'lucide-react';
 import {
   BarChart,
@@ -15,6 +15,8 @@ import { ChartTooltip } from '../components/ChartTooltip';
 import { MiniBar } from '../components/MiniBar';
 import { PocketIcon } from '../components/PocketIcon';
 import { QuickAddModal } from '../components/QuickAddModal';
+import { SettingsModal } from '../components/SettingsModal';
+import * as api from '../api';
 import { fmt, safePercent } from '../utils';
 import type { ItemData, PocketData, ChartRow, CategoryData } from '../types';
 
@@ -44,6 +46,15 @@ export function Dashboard({
   onQuickAdd,
 }: DashboardProps) {
   const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [savingsRate, setSavingsRate] = useState(50);
+
+  useEffect(() => {
+    api
+      .fetchSettings()
+      .then((s) => setSavingsRate(s.savingsRate))
+      .catch(() => {});
+  }, []);
   const totalIncome = income.reduce((s, i) => s + i.amount, 0);
   const totalServices = services.reduce((s, i) => s + i.amount, 0);
   const totalLoans = loans.reduce((s, i) => s + i.amount, 0);
@@ -91,13 +102,13 @@ export function Dashboard({
         />
         <SummaryCard
           label="Ahorro Automático"
-          mobileLabel="Ahorro 50%"
+          mobileLabel={`Ahorro ${savingsRate}%`}
           value={fmt(savings)}
-          sub="50% del saldo disponible"
+          sub={`${savingsRate}% del saldo disponible`}
           valueColor="text-accent-foreground"
           bgClass="bg-accent/20"
           icon={<PiggyBank className="w-4 h-4 text-accent-foreground" />}
-          tooltip="Calculado automáticamente como 50% del saldo disponible"
+          tooltip={`Calculado automáticamente como ${savingsRate}% del saldo disponible`}
         />
       </div>
 
@@ -107,6 +118,22 @@ export function Dashboard({
             <h2 className="text-sm font-bold text-foreground">Comparativo Mensual</h2>
             <p className="text-xs text-muted-foreground">Ingresos vs. Gastos — últimos 6 meses</p>
           </div>
+          <button
+            onClick={() => setShowSettings(true)}
+            className="p-1.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+            title="Configuración"
+          >
+            <svg
+              className="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+          </button>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart
               data={chartData}
@@ -138,6 +165,45 @@ export function Dashboard({
               <Bar dataKey="gastos" name="Gastos" fill="#c44545" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
+        </div>
+
+        <div className="bg-card border border-border rounded-2xl p-5 shadow-sm animate-in animate-in-d2">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-bold text-foreground">vs Mes Anterior</h2>
+            <span className="text-xs text-muted-foreground">
+              {chartHistory.length > 0 ? chartHistory[chartHistory.length - 1].mes : '-'}
+            </span>
+          </div>
+          {chartHistory.length > 0 &&
+            (() => {
+              const prev = chartHistory[chartHistory.length - 1];
+              const incDiff = totalIncome - prev.ingresos;
+              const expDiff = totalExpenses - prev.gastos;
+              const incPct = prev.ingresos ? Math.round((incDiff / prev.ingresos) * 100) : 0;
+              const expPct = prev.gastos ? Math.round((expDiff / prev.gastos) * 100) : 0;
+              return (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Ingresos</span>
+                    <span
+                      className={`font-mono font-bold ${incDiff >= 0 ? 'text-chart-2' : 'text-destructive'}`}
+                    >
+                      {incDiff >= 0 ? '+' : ''}
+                      {incPct}%
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Gastos</span>
+                    <span
+                      className={`font-mono font-bold ${expDiff <= 0 ? 'text-chart-2' : 'text-destructive'}`}
+                    >
+                      {expDiff >= 0 ? '+' : ''}
+                      {expPct}%
+                    </span>
+                  </div>
+                </div>
+              );
+            })()}
         </div>
 
         <div className="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col animate-in animate-in-d2">
@@ -284,6 +350,8 @@ export function Dashboard({
           onClose={() => setShowQuickAdd(false)}
         />
       )}
+
+      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
     </div>
   );
 }

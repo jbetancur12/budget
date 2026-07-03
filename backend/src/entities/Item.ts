@@ -31,6 +31,9 @@ export class Item {
   @Property({ default: false })
   recurring!: boolean;
 
+  @Property({ nullable: true })
+  notes?: string;
+
   @Property({ onCreate: () => new Date() })
   createdAt!: Date;
 

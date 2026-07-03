@@ -3,6 +3,7 @@ import { Item } from '../entities/Item.js';
 import { Pocket } from '../entities/Pocket.js';
 import { MonthlyHistory } from '../entities/MonthlyHistory.js';
 import { Category } from '../entities/Category.js';
+import { User } from '../entities/User.js';
 
 const SHORT_MONTHS = [
   'Ene',
@@ -45,6 +46,8 @@ export class CloseMonthService {
     );
     const pockets = await this.em.find(Pocket, { user: userId });
     const incomeCat = await this.em.findOneOrFail(Category, { user: userId, name: 'Ingresos' });
+    const user = await this.em.findOneOrFail(User, userId);
+    const savingsRate = user.savingsRate;
 
     const totalIncome = items
       .filter((i) => i.category.id === incomeCat.id)
@@ -53,7 +56,7 @@ export class CloseMonthService {
       .filter((i) => i.category.id !== incomeCat.id)
       .reduce((s, i) => s + i.amount, 0);
     const balance = totalIncome - totalExpenses;
-    const savings = Math.round(balance * 0.5);
+    const savings = Math.round(balance * (savingsRate / 100));
 
     this.em.create(MonthlyHistory, {
       monthOffset: currentMonthOffset,

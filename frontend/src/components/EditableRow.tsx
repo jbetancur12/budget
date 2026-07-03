@@ -11,6 +11,7 @@ interface EditableRowProps {
   onDelete: (id: number) => void;
   showType?: boolean;
   onRecurringToggle?: (id: number, recurring: boolean) => Promise<void>;
+  onNotesChange?: (id: number, notes: string) => Promise<void>;
 }
 
 export function EditableRow({
@@ -21,6 +22,7 @@ export function EditableRow({
   onDelete,
   showType,
   onRecurringToggle,
+  onNotesChange,
 }: EditableRowProps) {
   const [editingAmount, setEditingAmount] = useState(false);
   const [amountValue, setAmountValue] = useState('');
@@ -28,6 +30,8 @@ export function EditableRow({
   const [nameValue, setNameValue] = useState('');
   const [editingDate, setEditingDate] = useState(false);
   const [dateValue, setDateValue] = useState('');
+  const [editingNotes, setEditingNotes] = useState(false);
+  const [notesValue, setNotesValue] = useState('');
 
   const startAmountEdit = () => {
     setAmountValue(formatInput(String(item.amount)));
@@ -78,13 +82,59 @@ export function EditableRow({
               }}
             />
           ) : (
-            <span
-              className="cursor-pointer hover:text-primary transition-colors"
-              onClick={startNameEdit}
-              title="Click para editar nombre"
-            >
-              {item.name}
-            </span>
+            <div>
+              <span
+                className="cursor-pointer hover:text-primary transition-colors"
+                onClick={startNameEdit}
+                title="Click para editar nombre"
+              >
+                {item.name}
+              </span>
+              {onNotesChange &&
+                (editingNotes ? (
+                  <input
+                    autoFocus
+                    className="text-[11px] border border-primary rounded px-1.5 py-0.5 w-full bg-card mt-0.5 focus:outline-none"
+                    value={notesValue}
+                    onChange={(e) => setNotesValue(e.target.value)}
+                    onBlur={() => {
+                      onNotesChange(item.id, notesValue);
+                      setEditingNotes(false);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        onNotesChange(item.id, notesValue);
+                        setEditingNotes(false);
+                      }
+                      if (e.key === 'Escape') setEditingNotes(false);
+                    }}
+                    placeholder="Nota..."
+                  />
+                ) : item.notes ? (
+                  <span
+                    className="block text-[11px] text-muted-foreground/70 cursor-pointer hover:text-muted-foreground mt-0.5"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setNotesValue(item.notes ?? '');
+                      setEditingNotes(true);
+                    }}
+                    title="Click para editar nota"
+                  >
+                    {item.notes}
+                  </span>
+                ) : (
+                  <span
+                    className="block text-[11px] text-muted-foreground/30 cursor-pointer hover:text-muted-foreground/60 mt-0.5"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setNotesValue('');
+                      setEditingNotes(true);
+                    }}
+                  >
+                    + nota
+                  </span>
+                ))}
+            </div>
           )}
           {onRecurringToggle && (
             <button
