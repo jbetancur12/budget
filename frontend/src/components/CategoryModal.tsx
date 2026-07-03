@@ -143,7 +143,6 @@ export function CategoryModal({ onClose }: Props) {
                       autoFocus
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
-                      onBlur={() => handleUpdate(cat.id)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') handleUpdate(cat.id);
                         if (e.key === 'Escape') setEditingId(null);
@@ -153,7 +152,6 @@ export function CategoryModal({ onClose }: Props) {
                     <input
                       value={editBudget}
                       onChange={(e) => setEditBudget(formatInput(e.target.value))}
-                      onBlur={() => handleUpdate(cat.id)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') handleUpdate(cat.id);
                         if (e.key === 'Escape') setEditingId(null);
