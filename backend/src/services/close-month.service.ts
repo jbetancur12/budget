@@ -83,7 +83,6 @@ export class CloseMonthService {
       await this.upsertSaldoAnterior(userId, incomeCat.id, nextOffset, savings);
     }
 
-    await this.copyItemsToNextMonth(userId, incomeCat.id, items, nextOffset);
     await this.copyRecurringToNextMonth(userId, incomeCat.id, nextOffset);
     await this.em.flush();
 
@@ -113,31 +112,6 @@ export class CloseMonthService {
         user: userId,
         date: new Date().toISOString().slice(0, 10),
       } as never);
-    }
-  }
-
-  private async copyItemsToNextMonth(
-    userId: number,
-    incomeCatId: number,
-    items: Item[],
-    nextOffset: number,
-  ) {
-    const nextMonthItems = await this.em.find(Item, { monthOffset: nextOffset, user: userId });
-    const hasRealItems = nextMonthItems.some((i) => i.name !== 'Saldo Anterior');
-    if (!hasRealItems) {
-      for (const item of items) {
-        if (item.name !== 'Saldo Anterior') {
-          this.em.create(Item, {
-            name: item.name,
-            amount: item.amount,
-            type: item.type,
-            category: item.category.id,
-            monthOffset: nextOffset,
-            user: userId,
-            date: new Date().toISOString().slice(0, 10),
-          } as never);
-        }
-      }
     }
   }
 
