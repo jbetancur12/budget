@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import { defineConfig } from '@mikro-orm/postgresql';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
-import { ReflectMetadataProvider } from '@mikro-orm/core';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { config } from './config/index.js';
@@ -11,7 +10,6 @@ import { MonthlyHistory } from './entities/MonthlyHistory.js';
 import { User } from './entities/User.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const isProduction = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
   dbName: config.db.name,
@@ -20,7 +18,7 @@ export default defineConfig({
   user: config.db.user,
   password: config.db.password,
   entities: [Item, Pocket, MonthlyHistory, User],
-  metadataProvider: isProduction ? ReflectMetadataProvider : TsMorphMetadataProvider,
+  metadataProvider: TsMorphMetadataProvider,
   migrations: {
     path: join(__dirname, 'migrations'),
     glob: '!(*.d).{js,ts}',

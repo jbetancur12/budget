@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import bcrypt from 'bcrypt';
 import { initORM } from './db.js';
 import { Item } from './entities/Item.js';
