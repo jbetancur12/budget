@@ -126,6 +126,13 @@ export class CloseMonthService {
 
     for (const item of recurring) {
       if (!existingNames.has(item.name)) {
+        const day = item.date ? parseInt(item.date.slice(8, 10), 10) : 1;
+        const monthIdx = 6 + nextOffset;
+        const year = 2026 + Math.floor(monthIdx / 12);
+        const m = ((monthIdx % 12) + 12) % 12;
+        const lastDay = new Date(year, m + 1, 0).getDate();
+        const newDate = `${year}-${String(m + 1).padStart(2, '0')}-${String(Math.min(day, lastDay)).padStart(2, '0')}`;
+
         this.em.create(Item, {
           name: item.name,
           amount: item.amount,
@@ -133,7 +140,7 @@ export class CloseMonthService {
           category: item.category.id,
           monthOffset: nextOffset,
           user: userId,
-          date: new Date().toISOString().slice(0, 10),
+          date: newDate,
           recurring: true,
         } as never);
       }

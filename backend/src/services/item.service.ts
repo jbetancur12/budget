@@ -37,17 +37,31 @@ export class ItemService {
     if (query.monthOffset !== undefined) where.monthOffset = query.monthOffset;
     if (query.search) where.name = { $ilike: `%${query.search}%` };
 
-    const items = await this.em.find(Item, where, { orderBy: { date: 'DESC' }, populate: ['category'] });
+    const items = await this.em.find(Item, where, {
+      orderBy: { date: 'DESC' },
+      populate: ['category'],
+    });
 
     // Auto-populate recurring items when navigating to an empty month
     if (items.length === 0 && query.monthOffset !== undefined && !query.search) {
-      const recurring = await this.em.find(Item, { user: userId, recurring: true }, { populate: ['category'] });
+      const recurring = await this.em.find(
+        Item,
+        { user: userId, recurring: true },
+        { populate: ['category'] },
+      );
       const existingNames = new Set<string>();
       let created = false;
 
       for (const r of recurring) {
         if (!existingNames.has(r.name)) {
           existingNames.add(r.name);
+          const day = r.date ? parseInt(r.date.slice(8, 10), 10) : 1;
+          const monthIdx = 6 + query.monthOffset!;
+          const year = 2026 + Math.floor(monthIdx / 12);
+          const m = ((monthIdx % 12) + 12) % 12;
+          const lastDay = new Date(year, m + 1, 0).getDate();
+          const newDate = `${year}-${String(m + 1).padStart(2, '0')}-${String(Math.min(day, lastDay)).padStart(2, '0')}`;
+
           this.em.create(Item, {
             name: r.name,
             amount: r.amount,
@@ -55,7 +69,7 @@ export class ItemService {
             category: r.category.id,
             monthOffset: query.monthOffset,
             user: userId,
-            date: new Date().toISOString().slice(0, 10),
+            date: newDate,
             recurring: true,
           } as never);
           created = true;
