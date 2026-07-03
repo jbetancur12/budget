@@ -62,7 +62,7 @@ export default function App() {
     makeHandlers,
     updatePockets,
     refresh,
-    lastDeleted,
+    deletedItem,
     undoDelete,
     clearLastDeleted,
   } = budgetData;
@@ -143,9 +143,9 @@ export default function App() {
 
       <MobileNav tab={tab} onTabChange={setTab} onLogout={logout} />
       <PwaUpdatePrompt />
-      {lastDeleted && (
+      {deletedItem && (
         <Toast
-          message={`"${lastDeleted.name}" eliminado`}
+          message={`"${deletedItem.name}" eliminado`}
           action={{ label: 'Deshacer', onClick: undoDelete }}
           onDone={clearLastDeleted}
         />

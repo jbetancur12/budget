@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import * as api from '../api';
 import type {
   ItemData,
@@ -37,7 +37,8 @@ export function useBudgetData(monthOffset: number | null) {
     error: null,
   });
   const [search, setSearch] = useState('');
-  const [lastDeleted, setLastDeleted] = useState<ItemData | null>(null);
+  const deletedRef = useRef<ItemData | null>(null);
+  const [deletedItem, setDeletedItem] = useState<ItemData | null>(null);
 
   const refresh = useCallback(async (offset: number, searchTerm?: string) => {
     setData((prev) => ({ ...prev, loading: true, error: null }));
@@ -98,10 +99,8 @@ export function useBudgetData(monthOffset: number | null) {
           refresh(offset, search || undefined);
         },
         onDelete: async (id: number) => {
-          const item = Object.values(data.itemsByCategory)
-            .flat()
-            .find((i) => i.id === id);
-          if (item) setLastDeleted(item);
+          const item = Object.values(data.itemsByCategory).flat().find((i) => i.id === id);
+          if (item) { deletedRef.current = item; setDeletedItem(item); }
           await api.deleteItem(id);
           refresh(offset, search || undefined);
         },
@@ -147,7 +146,7 @@ export function useBudgetData(monthOffset: number | null) {
   }, []);
 
   const undoDelete = useCallback(async () => {
-    const item = lastDeleted;
+    const item = deletedRef.current;
     if (!item) return;
     await api.createItem({
       name: item.name,
@@ -159,11 +158,12 @@ export function useBudgetData(monthOffset: number | null) {
       recurring: item.recurring,
       notes: item.notes,
     });
-    setLastDeleted(null);
+    deletedRef.current = null;
+    setDeletedItem(null);
     if (monthOffset !== null) refresh(monthOffset, search || undefined);
-  }, [lastDeleted, monthOffset, search, refresh]);
+  }, [monthOffset, search, refresh]);
 
-  const clearLastDeleted = useCallback(() => setLastDeleted(null), []);
+  const clearLastDeleted = useCallback(() => { deletedRef.current = null; setDeletedItem(null); }, []);
 
   return {
     ...data,
@@ -172,7 +172,7 @@ export function useBudgetData(monthOffset: number | null) {
     makeHandlers,
     updatePockets,
     refresh,
-    lastDeleted,
+    deletedItem,
     undoDelete,
     clearLastDeleted,
   };
