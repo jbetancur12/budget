@@ -70,70 +70,22 @@ export function Dashboard({
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <SummaryCard
-          label="Ingresos Totales"
-          mobileLabel="Ingresos"
-          value={fmt(totalIncome)}
-          sub="Salario Neto + Otros"
-          valueColor="text-chart-2"
-          bgClass="bg-chart-2/10"
-          icon={<TrendingUp className="w-4 h-4 text-chart-2" />}
-        />
-        <SummaryCard
-          label="Gastos Totales"
-          mobileLabel="Gastos"
-          value={fmt(totalExpenses)}
-          sub="Fijos + Variables"
-          valueColor="text-chart-4"
-          bgClass="bg-chart-4/10"
-          icon={<TrendingDown className="w-4 h-4 text-chart-4" />}
-        />
-        <SummaryCard
-          label="Saldo Disponible"
-          mobileLabel="Disponible"
-          value={fmt(balance)}
-          sub="Ingresos − Gastos"
-          valueColor={balance >= 0 ? 'text-primary' : 'text-destructive'}
-          bgClass={balance >= 0 ? 'bg-primary/10' : 'bg-destructive/10'}
-          icon={
-            <Wallet className={`w-4 h-4 ${balance >= 0 ? 'text-primary' : 'text-destructive'}`} />
-          }
-        />
-        <SummaryCard
-          label="Ahorro Automático"
-          mobileLabel={`Ahorro ${savingsRate}%`}
-          value={fmt(savings)}
-          sub={`${savingsRate}% del saldo disponible`}
-          valueColor="text-foreground"
-          bgClass="bg-accent/20"
-          icon={<PiggyBank className="w-4 h-4 text-foreground" />}
-          tooltip={`Calculado automáticamente como ${savingsRate}% del saldo disponible`}
-        />
+      <div className="flex justify-end">
+        <button
+          onClick={() => setShowSettings(true)}
+          className="p-2 rounded-xl border border-border hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+          title="Ajustar % de ahorro"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </button>
       </div>
-
-      <div className="grid lg:grid-cols-3 gap-5">
-        <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-5 shadow-sm animate-in animate-in-d1">
           <div className="mb-4">
             <h2 className="text-sm font-bold text-foreground">Comparativo Mensual</h2>
             <p className="text-xs text-muted-foreground">Ingresos vs. Gastos — últimos 6 meses</p>
           </div>
-          <button
-            onClick={() => setShowSettings(true)}
-            className="p-1.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-            title="Configuración"
-          >
-            <svg
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-            </svg>
-          </button>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart
               data={chartData}
