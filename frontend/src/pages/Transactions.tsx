@@ -1,5 +1,7 @@
-import { Search, Download } from 'lucide-react';
+import { useState } from 'react';
+import { Search, Download, Settings2 } from 'lucide-react';
 import { TableSection } from '../components/TableSection';
+import { CategoryModal } from '../components/CategoryModal';
 import { fmt } from '../utils';
 import type { ItemData, CategoryData, ItemHandlers } from '../types';
 
@@ -51,6 +53,7 @@ export function Transactions({
   openCategories, onToggleCategory, makeHandlers,
   search, onSearchChange,
 }: TransactionsProps) {
+  const [showCategories, setShowCategories] = useState(false);
   const totalIncome = incomeCategories
     .flatMap((c) => itemsByCategory[c.id] ?? [])
     .reduce((s, i) => s + i.amount, 0);
@@ -66,13 +69,22 @@ export function Transactions({
           <h1 className="text-xl font-bold text-foreground">Transacciones</h1>
           <p className="text-sm text-muted-foreground">{monthLabel}</p>
         </div>
-        <button
-          onClick={() => downloadCSV(categories, itemsByCategory, monthLabel)}
-          className="p-2 rounded-xl border border-border hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-          title="Exportar CSV"
-        >
-          <Download className="w-4 h-4" />
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setShowCategories(true)}
+            className="p-2 rounded-xl border border-border hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+            title="Gestionar categorías"
+          >
+            <Settings2 className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => downloadCSV(categories, itemsByCategory, monthLabel)}
+            className="p-2 rounded-xl border border-border hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+            title="Exportar CSV"
+          >
+            <Download className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {onSearchChange && (
@@ -139,6 +151,8 @@ export function Transactions({
           );
         })}
       </div>
+
+      {showCategories && <CategoryModal onClose={() => setShowCategories(false)} />}
 
       <div className="bg-accent/10 border border-accent/20 rounded-2xl p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
