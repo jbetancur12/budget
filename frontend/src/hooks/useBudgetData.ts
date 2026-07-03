@@ -131,10 +131,6 @@ export function useBudgetData(monthOffset: number | null) {
           await api.updateItem(id, { notes });
           refresh(offset, search || undefined);
         },
-        onRecurringToggle: async (id: number, recurring: boolean) => {
-          await api.updateItem(id, { recurring });
-          refresh(offset, search || undefined);
-        },
       };
     },
     [monthOffset, search, refresh, data],
