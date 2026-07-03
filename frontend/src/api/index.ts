@@ -2,6 +2,7 @@ export { ApiError } from './client';
 export { fetchItems, createItem, updateItem, deleteItem } from './items';
 export { fetchCategories, createCategory, updateCategory, deleteCategory } from './categories';
 export { fetchSettings, updateSettings } from './settings';
+export { fetchDebts, createDebt, recordPayment, deleteDebt } from './debts';
 export {
   fetchPockets,
   createPocket,

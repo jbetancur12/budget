@@ -189,7 +189,14 @@ export function Transactions({
         })}
       </div>
 
-      {showCategories && <CategoryModal onClose={() => { setShowCategories(false); onCategoriesChange?.(); }} />}
+      {showCategories && (
+        <CategoryModal
+          onClose={() => {
+            setShowCategories(false);
+            onCategoriesChange?.();
+          }}
+        />
+      )}
 
       <div className="bg-accent/10 border border-accent/20 rounded-2xl p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">

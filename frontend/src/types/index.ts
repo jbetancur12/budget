@@ -1,5 +1,5 @@
 // ─── Domain types ────────────────────────────────────────────────────────────
-export type Tab = 'dashboard' | 'transactions' | 'pockets';
+export type Tab = 'dashboard' | 'transactions' | 'pockets' | 'debts';
 export type CloseOption = 'next' | 'distribute';
 export type ItemType = 'Fijo' | 'Variable';
 export type ItemCategory = 'income' | 'services' | 'loans' | 'variable';
@@ -46,6 +46,17 @@ export interface ChartData {
   totalIncome: number;
   totalExpenses: number;
   savings: number;
+}
+
+export interface DebtData {
+  id: number;
+  person: string;
+  type: 'lent' | 'borrowed';
+  originalAmount: number;
+  remainingBalance: number;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // ─── UI types ─────────────────────────────────────────────────────────────────

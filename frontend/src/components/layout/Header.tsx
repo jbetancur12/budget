@@ -32,6 +32,7 @@ const NAV_ITEMS = [
   { id: 'dashboard' as Tab, label: 'Resumen' },
   { id: 'transactions' as Tab, label: 'Transacciones' },
   { id: 'pockets' as Tab, label: 'Bolsillos' },
+  { id: 'debts' as Tab, label: 'Deudas' },
 ];
 
 function useDarkMode() {

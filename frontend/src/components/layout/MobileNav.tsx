@@ -1,4 +1,4 @@
-import { LayoutDashboard, ArrowLeftRight, PiggyBank, LogOut } from 'lucide-react';
+import { LayoutDashboard, ArrowLeftRight, PiggyBank, LogOut, Handshake } from 'lucide-react';
 import type { Tab } from '../../types';
 
 interface MobileNavProps {
@@ -11,6 +11,7 @@ const ITEMS = [
   { id: 'dashboard' as Tab, label: 'Resumen', icon: LayoutDashboard },
   { id: 'transactions' as Tab, label: 'Movimientos', icon: ArrowLeftRight },
   { id: 'pockets' as Tab, label: 'Bolsillos', icon: PiggyBank },
+  { id: 'debts' as Tab, label: 'Deudas', icon: Handshake },
 ];
 
 export function MobileNav({ tab, onTabChange, onLogout }: MobileNavProps) {

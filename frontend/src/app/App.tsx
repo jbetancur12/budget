@@ -6,6 +6,7 @@ import { Toast } from '../components/Toast';
 import { Dashboard } from '../pages/Dashboard';
 import { Transactions } from '../pages/Transactions';
 import { Pockets } from '../pages/Pockets';
+import { Debts } from '../pages/Debts';
 import { LoginPage } from '../pages/LoginPage';
 import { useAuth } from '../hooks/useAuth';
 import { useMonth } from '../hooks/useMonth';
@@ -125,6 +126,8 @@ export default function App() {
             onCategoriesChange={() => refresh(monthOffset, search || undefined)}
           />
         )}
+
+        {tab === 'debts' && <Debts />}
 
         {tab === 'pockets' && (
           <Pockets

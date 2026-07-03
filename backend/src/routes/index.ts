@@ -7,6 +7,7 @@ import { chartRouter } from './chart.js';
 import { closeMonthRouter } from './close-month.js';
 import { categoriesRouter } from './categories.js';
 import { settingsRouter } from './settings.js';
+import { debtsRouter } from './debts.js';
 
 export function mountRoutes(router: Router, prefix = '/api') {
   router.use(`${prefix}/auth`, authRouter);
@@ -16,4 +17,5 @@ export function mountRoutes(router: Router, prefix = '/api') {
   router.use(`${prefix}/close-month`, authenticate, closeMonthRouter);
   router.use(`${prefix}/categories`, authenticate, categoriesRouter);
   router.use(`${prefix}/settings`, authenticate, settingsRouter);
+  router.use(`${prefix}/debts`, authenticate, debtsRouter);
 }
