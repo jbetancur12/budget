@@ -46,7 +46,7 @@ export class ItemService {
     const item = this.em.create(Item, {
       name: data.name,
       amount: data.amount ?? 0,
-      type: data.type ?? 'Variable' as const,
+      type: data.type ?? ('Variable' as const),
       category: category.id,
       monthOffset: data.monthOffset ?? 0,
       date: data.date ?? new Date().toISOString().slice(0, 10),
@@ -64,7 +64,7 @@ export class ItemService {
     if (data.categoryId) {
       const category = await this.em.findOne(Category, { id: data.categoryId, user: userId });
       if (!category) throw new NotFoundError('Category not found');
-      (item as any).category = data.categoryId;
+      item.category = category;
     }
 
     this.em.assign(item, data);

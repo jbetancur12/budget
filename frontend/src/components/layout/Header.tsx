@@ -3,8 +3,18 @@ import { Wallet, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import type { Tab } from '../../types';
 
 const MONTHS = [
-  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
 ];
 
 interface HeaderProps {
@@ -25,8 +35,14 @@ const NAV_ITEMS = [
 ];
 
 export function Header({
-  tab, monthLabel, monthOffset, onPrevMonth, onNextMonth,
-  onTabChange, onLogout, onMonthPick,
+  tab,
+  monthLabel,
+  monthOffset,
+  onPrevMonth,
+  onNextMonth,
+  onTabChange,
+  onLogout,
+  onMonthPick,
 }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const [viewYear, setViewYear] = useState(() => {
@@ -87,7 +103,10 @@ export function Header({
             ))}
           </nav>
 
-          <div className="flex items-center gap-1 bg-white/10 rounded-xl px-1.5 sm:px-2 py-1.5 shrink-0 relative" ref={ref}>
+          <div
+            className="flex items-center gap-1 bg-white/10 rounded-xl px-1.5 sm:px-2 py-1.5 shrink-0 relative"
+            ref={ref}
+          >
             <button
               onClick={onPrevMonth}
               className="p-1 rounded-lg hover:bg-white/15 transition-colors active:scale-95"

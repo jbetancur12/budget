@@ -69,20 +69,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     const result = await apiLogin(email, password);
-    persist({ user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken });
+    persist({
+      user: result.user,
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
+    });
     setState({ user: result.user, loading: false });
   }, []);
 
   const logout = useCallback(async () => {
-    try { await apiLogout(); } catch { /* ignore */ }
+    try {
+      await apiLogout();
+    } catch {
+      /* ignore */
+    }
     clearStorage();
     setState({ user: null, loading: false });
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...state, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ ...state, login, logout }}>{children}</AuthContext.Provider>
   );
 }
 

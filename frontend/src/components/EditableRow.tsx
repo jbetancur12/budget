@@ -13,7 +13,15 @@ interface EditableRowProps {
   onRecurringToggle?: (id: number, recurring: boolean) => Promise<void>;
 }
 
-export function EditableRow({ item, onNameChange, onAmountChange, onDateChange, onDelete, showType, onRecurringToggle }: EditableRowProps) {
+export function EditableRow({
+  item,
+  onNameChange,
+  onAmountChange,
+  onDateChange,
+  onDelete,
+  showType,
+  onRecurringToggle,
+}: EditableRowProps) {
   const [editingAmount, setEditingAmount] = useState(false);
   const [amountValue, setAmountValue] = useState('');
   const [editingName, setEditingName] = useState(false);
@@ -70,13 +78,20 @@ export function EditableRow({ item, onNameChange, onAmountChange, onDateChange, 
               }}
             />
           ) : (
-            <span className="cursor-pointer hover:text-primary transition-colors" onClick={startNameEdit} title="Click para editar nombre">
+            <span
+              className="cursor-pointer hover:text-primary transition-colors"
+              onClick={startNameEdit}
+              title="Click para editar nombre"
+            >
               {item.name}
             </span>
           )}
           {onRecurringToggle && (
             <button
-              onClick={(e) => { e.stopPropagation(); onRecurringToggle(item.id, !item.recurring); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onRecurringToggle(item.id, !item.recurring);
+              }}
               className={`p-0.5 rounded transition-colors ${item.recurring ? 'text-primary' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}
               title={item.recurring ? 'Recurrente' : 'No recurrente'}
             >
@@ -100,7 +115,11 @@ export function EditableRow({ item, onNameChange, onAmountChange, onDateChange, 
             }}
           />
         ) : (
-          <span className="cursor-pointer hover:text-primary transition-colors" onClick={startDateEdit} title="Click para editar fecha">
+          <span
+            className="cursor-pointer hover:text-primary transition-colors"
+            onClick={startDateEdit}
+            title="Click para editar fecha"
+          >
             {item.date?.slice(0, 10)}
           </span>
         )}

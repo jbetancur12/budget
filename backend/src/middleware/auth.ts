@@ -9,7 +9,11 @@ export const authenticate = (req: Request, _res: Response, next: NextFunction) =
 
   const token = header.slice(7);
   try {
-    const payload = jwt.verify(token, config.jwt.accessSecret) as { userId: number; email: string; role: string };
+    const payload = jwt.verify(token, config.jwt.accessSecret) as {
+      userId: number;
+      email: string;
+      role: string;
+    };
     req.user = payload;
     next();
   } catch {

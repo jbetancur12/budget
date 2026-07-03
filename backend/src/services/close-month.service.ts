@@ -5,8 +5,18 @@ import { MonthlyHistory } from '../entities/MonthlyHistory.js';
 import { Category } from '../entities/Category.js';
 
 const SHORT_MONTHS = [
-  'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-  'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic',
+  'Ene',
+  'Feb',
+  'Mar',
+  'Abr',
+  'May',
+  'Jun',
+  'Jul',
+  'Ago',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dic',
 ];
 
 function shortMonth(offset: number): string {
@@ -28,7 +38,11 @@ export class CloseMonthService {
     const { closeOption, pocketAmounts, currentMonthOffset = 0 } = data;
     const nextOffset = currentMonthOffset + 1;
 
-    const items = await this.em.find(Item, { monthOffset: currentMonthOffset, user: userId }, { populate: ['category'] });
+    const items = await this.em.find(
+      Item,
+      { monthOffset: currentMonthOffset, user: userId },
+      { populate: ['category'] },
+    );
     const pockets = await this.em.find(Pocket, { user: userId });
     const incomeCat = await this.em.findOneOrFail(Category, { user: userId, name: 'Ingresos' });
 
@@ -73,8 +87,17 @@ export class CloseMonthService {
     return { nextOffset };
   }
 
-  private async upsertSaldoAnterior(userId: number, incomeCatId: number, monthOffset: number, amount: number) {
-    const existing = await this.em.findOne(Item, { name: 'Saldo Anterior', monthOffset, user: userId } as never);
+  private async upsertSaldoAnterior(
+    userId: number,
+    incomeCatId: number,
+    monthOffset: number,
+    amount: number,
+  ) {
+    const existing = await this.em.findOne(Item, {
+      name: 'Saldo Anterior',
+      monthOffset,
+      user: userId,
+    } as never);
     if (existing) {
       existing.amount += amount;
     } else {
@@ -90,7 +113,12 @@ export class CloseMonthService {
     }
   }
 
-  private async copyItemsToNextMonth(userId: number, incomeCatId: number, items: Item[], nextOffset: number) {
+  private async copyItemsToNextMonth(
+    userId: number,
+    incomeCatId: number,
+    items: Item[],
+    nextOffset: number,
+  ) {
     const nextMonthItems = await this.em.find(Item, { monthOffset: nextOffset, user: userId });
     const hasRealItems = nextMonthItems.some((i) => i.name !== 'Saldo Anterior');
     if (!hasRealItems) {
@@ -100,7 +128,7 @@ export class CloseMonthService {
             name: item.name,
             amount: item.amount,
             type: item.type,
-            category: (item.category as any).id,
+            category: item.category.id,
             monthOffset: nextOffset,
             user: userId,
             date: new Date().toISOString().slice(0, 10),
@@ -111,7 +139,11 @@ export class CloseMonthService {
   }
 
   private async copyRecurringToNextMonth(userId: number, incomeCatId: number, nextOffset: number) {
-    const recurring = await this.em.find(Item, { user: userId, recurring: true }, { populate: ['category'] });
+    const recurring = await this.em.find(
+      Item,
+      { user: userId, recurring: true },
+      { populate: ['category'] },
+    );
     const existing = await this.em.find(Item, { monthOffset: nextOffset, user: userId });
     const existingNames = new Set(existing.map((i) => i.name));
 
@@ -121,7 +153,7 @@ export class CloseMonthService {
           name: item.name,
           amount: item.amount,
           type: item.type,
-          category: (item.category as any).id,
+          category: item.category.id,
           monthOffset: nextOffset,
           user: userId,
           date: new Date().toISOString().slice(0, 10),

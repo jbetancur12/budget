@@ -18,7 +18,11 @@ interface TransactionsProps {
   onSearchChange?: (value: string) => void;
 }
 
-function downloadCSV(categories: CategoryData[], itemsByCategory: Record<number, ItemData[]>, monthLabel: string) {
+function downloadCSV(
+  categories: CategoryData[],
+  itemsByCategory: Record<number, ItemData[]>,
+  monthLabel: string,
+) {
   const rows: string[] = [];
   rows.push('Categoría,Nombre,Monto,Tipo,Fecha');
   for (const cat of categories) {
@@ -27,10 +31,12 @@ function downloadCSV(categories: CategoryData[], itemsByCategory: Record<number,
     }
   }
 
-  const totalIncome = categories.filter((c) => c.type === 'income')
+  const totalIncome = categories
+    .filter((c) => c.type === 'income')
     .flatMap((c) => itemsByCategory[c.id] ?? [])
     .reduce((s, i) => s + i.amount, 0);
-  const totalExpenses = categories.filter((c) => c.type === 'expense')
+  const totalExpenses = categories
+    .filter((c) => c.type === 'expense')
     .flatMap((c) => itemsByCategory[c.id] ?? [])
     .reduce((s, i) => s + i.amount, 0);
 
@@ -49,9 +55,16 @@ function downloadCSV(categories: CategoryData[], itemsByCategory: Record<number,
 }
 
 export function Transactions({
-  categories, incomeCategories, expenseCategories, itemsByCategory, monthLabel,
-  openCategories, onToggleCategory, makeHandlers,
-  search, onSearchChange,
+  categories,
+  incomeCategories,
+  expenseCategories,
+  itemsByCategory,
+  monthLabel,
+  openCategories,
+  onToggleCategory,
+  makeHandlers,
+  search,
+  onSearchChange,
 }: TransactionsProps) {
   const [showCategories, setShowCategories] = useState(false);
   const totalIncome = incomeCategories
@@ -104,7 +117,9 @@ export function Transactions({
         <div className="flex items-center gap-2 mb-2.5">
           <div className="w-1 h-4 rounded-full bg-chart-2" />
           <h2 className="font-bold text-foreground text-sm uppercase tracking-wide">Ingresos</h2>
-          <span className="ml-auto font-mono text-sm font-bold text-chart-2">{fmt(totalIncome)}</span>
+          <span className="ml-auto font-mono text-sm font-bold text-chart-2">
+            {fmt(totalIncome)}
+          </span>
         </div>
         {incomeCategories.map((cat) => {
           const items = itemsByCategory[cat.id] ?? [];
@@ -130,7 +145,9 @@ export function Transactions({
         <div className="flex items-center gap-2 mb-2.5">
           <div className="w-1 h-4 rounded-full bg-chart-4" />
           <h2 className="font-bold text-foreground text-sm uppercase tracking-wide">Gastos</h2>
-          <span className="ml-auto font-mono text-sm font-bold text-chart-4">{fmt(totalExpenses)}</span>
+          <span className="ml-auto font-mono text-sm font-bold text-chart-4">
+            {fmt(totalExpenses)}
+          </span>
         </div>
         {expenseCategories.map((cat) => {
           const items = itemsByCategory[cat.id] ?? [];
@@ -157,13 +174,21 @@ export function Transactions({
       <div className="bg-accent/10 border border-accent/20 rounded-2xl p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-            <span className="text-muted-foreground">Ingresos <span className="font-mono font-bold text-chart-2">{fmt(totalIncome)}</span></span>
+            <span className="text-muted-foreground">
+              Ingresos <span className="font-mono font-bold text-chart-2">{fmt(totalIncome)}</span>
+            </span>
             <span className="text-muted-foreground">−</span>
-            <span className="text-muted-foreground">Gastos <span className="font-mono font-bold text-chart-4">{fmt(totalExpenses)}</span></span>
+            <span className="text-muted-foreground">
+              Gastos <span className="font-mono font-bold text-chart-4">{fmt(totalExpenses)}</span>
+            </span>
           </div>
           <div className="text-right">
             <p className="text-xs text-muted-foreground">Saldo disponible</p>
-            <p className={`font-mono font-bold text-xl ${balance >= 0 ? 'text-primary' : 'text-destructive'}`}>{fmt(balance)}</p>
+            <p
+              className={`font-mono font-bold text-xl ${balance >= 0 ? 'text-primary' : 'text-destructive'}`}
+            >
+              {fmt(balance)}
+            </p>
           </div>
         </div>
       </div>

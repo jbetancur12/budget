@@ -5,7 +5,10 @@ export async function fetchCategories(): Promise<CategoryData[]> {
   return request<CategoryData[]>('/categories');
 }
 
-export async function createCategory(data: { name: string; type: 'income' | 'expense' }): Promise<CategoryData> {
+export async function createCategory(data: {
+  name: string;
+  type: 'income' | 'expense';
+}): Promise<CategoryData> {
   return request<CategoryData>('/categories', {
     method: 'POST',
     body: JSON.stringify(data),

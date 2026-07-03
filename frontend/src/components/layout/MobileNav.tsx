@@ -28,10 +28,18 @@ export function MobileNav({ tab, onTabChange, onLogout }: MobileNavProps) {
               onClick={() => onTabChange(id)}
               className="flex-1 flex flex-col items-center justify-center gap-1 py-2.5 transition-all active:scale-95"
             >
-              <div className={`w-12 h-7 flex items-center justify-center rounded-full transition-all duration-200 ${active ? 'bg-primary/10' : ''}`}>
-                <Icon className={`w-5 h-5 transition-colors duration-200 ${active ? 'text-primary' : 'text-muted-foreground'}`} />
+              <div
+                className={`w-12 h-7 flex items-center justify-center rounded-full transition-all duration-200 ${active ? 'bg-primary/10' : ''}`}
+              >
+                <Icon
+                  className={`w-5 h-5 transition-colors duration-200 ${active ? 'text-primary' : 'text-muted-foreground'}`}
+                />
               </div>
-              <span className={`text-[10px] font-bold tracking-wide transition-colors duration-200 ${active ? 'text-primary' : 'text-muted-foreground'}`}>{label}</span>
+              <span
+                className={`text-[10px] font-bold tracking-wide transition-colors duration-200 ${active ? 'text-primary' : 'text-muted-foreground'}`}
+              >
+                {label}
+              </span>
             </button>
           );
         })}

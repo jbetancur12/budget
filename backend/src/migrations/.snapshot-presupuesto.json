@@ -1,7 +1,5 @@
 {
-  "namespaces": [
-    "public"
-  ],
+  "namespaces": ["public"],
   "name": "public",
   "tables": [
     {
@@ -51,10 +49,7 @@
           "scale": null,
           "default": null,
           "comment": null,
-          "enumItems": [
-            "income",
-            "expense"
-          ],
+          "enumItems": ["income", "expense"],
           "mappedType": "enum"
         },
         "user_id": {
@@ -110,9 +105,7 @@
       "schema": "public",
       "indexes": [
         {
-          "columnNames": [
-            "id"
-          ],
+          "columnNames": ["id"],
           "composite": false,
           "constraint": false,
           "keyName": "category_pkey",
@@ -120,9 +113,7 @@
           "primary": true
         },
         {
-          "columnNames": [
-            "user_id"
-          ],
+          "columnNames": ["user_id"],
           "composite": false,
           "constraint": false,
           "keyName": "category_user_id_index",
@@ -133,15 +124,11 @@
       "checks": [],
       "foreignKeys": {
         "category_user_id_fkey": {
-          "columnNames": [
-            "user_id"
-          ],
+          "columnNames": ["user_id"],
           "constraintName": "category_user_id_fkey",
           "localTableName": "public.category",
           "referencedTableName": "public.user",
-          "referencedColumnNames": [
-            "id"
-          ],
+          "referencedColumnNames": ["id"],
           "updateRule": "no action",
           "deleteRule": "cascade"
         }
@@ -212,10 +199,7 @@
           "scale": null,
           "default": null,
           "comment": null,
-          "enumItems": [
-            "Fijo",
-            "Variable"
-          ],
+          "enumItems": ["Fijo", "Variable"],
           "mappedType": "enum"
         },
         "month_offset": {
@@ -335,9 +319,7 @@
       "schema": "public",
       "indexes": [
         {
-          "columnNames": [
-            "category_id"
-          ],
+          "columnNames": ["category_id"],
           "composite": false,
           "constraint": false,
           "keyName": "item_category_id_index",
@@ -345,9 +327,7 @@
           "primary": false
         },
         {
-          "columnNames": [
-            "id"
-          ],
+          "columnNames": ["id"],
           "composite": false,
           "constraint": false,
           "keyName": "item_pkey",
@@ -355,9 +335,7 @@
           "primary": true
         },
         {
-          "columnNames": [
-            "user_id"
-          ],
+          "columnNames": ["user_id"],
           "composite": false,
           "constraint": false,
           "keyName": "item_user_id_index",
@@ -368,28 +346,20 @@
       "checks": [],
       "foreignKeys": {
         "item_category_id_foreign": {
-          "columnNames": [
-            "category_id"
-          ],
+          "columnNames": ["category_id"],
           "constraintName": "item_category_id_foreign",
           "localTableName": "public.item",
           "referencedTableName": "public.category",
-          "referencedColumnNames": [
-            "id"
-          ],
+          "referencedColumnNames": ["id"],
           "updateRule": "no action",
           "deleteRule": "restrict"
         },
         "item_user_id_foreign": {
-          "columnNames": [
-            "user_id"
-          ],
+          "columnNames": ["user_id"],
           "constraintName": "item_user_id_foreign",
           "localTableName": "public.item",
           "referencedTableName": "public.user",
-          "referencedColumnNames": [
-            "id"
-          ],
+          "referencedColumnNames": ["id"],
           "updateRule": "no action",
           "deleteRule": "cascade"
         }
@@ -532,9 +502,7 @@
       "schema": "public",
       "indexes": [
         {
-          "columnNames": [
-            "id"
-          ],
+          "columnNames": ["id"],
           "composite": false,
           "constraint": false,
           "keyName": "monthly_history_pkey",
@@ -542,9 +510,7 @@
           "primary": true
         },
         {
-          "columnNames": [
-            "user_id"
-          ],
+          "columnNames": ["user_id"],
           "composite": false,
           "constraint": false,
           "keyName": "monthly_history_user_id_index",
@@ -555,15 +521,11 @@
       "checks": [],
       "foreignKeys": {
         "monthly_history_user_id_foreign": {
-          "columnNames": [
-            "user_id"
-          ],
+          "columnNames": ["user_id"],
           "constraintName": "monthly_history_user_id_foreign",
           "localTableName": "public.monthly_history",
           "referencedTableName": "public.user",
-          "referencedColumnNames": [
-            "id"
-          ],
+          "referencedColumnNames": ["id"],
           "updateRule": "no action",
           "deleteRule": "cascade"
         }
@@ -666,12 +628,7 @@
           "scale": null,
           "default": "'Shield'",
           "comment": null,
-          "enumItems": [
-            "Shield",
-            "Plane",
-            "TrendingUp",
-            "BookOpen"
-          ],
+          "enumItems": ["Shield", "Plane", "TrendingUp", "BookOpen"],
           "mappedType": "enum"
         },
         "created_at": {
@@ -727,9 +684,7 @@
       "schema": "public",
       "indexes": [
         {
-          "columnNames": [
-            "id"
-          ],
+          "columnNames": ["id"],
           "composite": false,
           "constraint": false,
           "keyName": "pocket_pkey",
@@ -737,9 +692,7 @@
           "primary": true
         },
         {
-          "columnNames": [
-            "user_id"
-          ],
+          "columnNames": ["user_id"],
           "composite": false,
           "constraint": false,
           "keyName": "pocket_user_id_index",
@@ -750,15 +703,11 @@
       "checks": [],
       "foreignKeys": {
         "pocket_user_id_foreign": {
-          "columnNames": [
-            "user_id"
-          ],
+          "columnNames": ["user_id"],
           "constraintName": "pocket_user_id_foreign",
           "localTableName": "public.pocket",
           "referencedTableName": "public.user",
-          "referencedColumnNames": [
-            "id"
-          ],
+          "referencedColumnNames": ["id"],
           "updateRule": "no action",
           "deleteRule": "cascade"
         }
@@ -901,9 +850,7 @@
       "schema": "public",
       "indexes": [
         {
-          "columnNames": [
-            "email"
-          ],
+          "columnNames": ["email"],
           "composite": false,
           "constraint": true,
           "keyName": "user_email_unique",
@@ -911,9 +858,7 @@
           "primary": false
         },
         {
-          "columnNames": [
-            "id"
-          ],
+          "columnNames": ["id"],
           "composite": false,
           "constraint": false,
           "keyName": "user_pkey",

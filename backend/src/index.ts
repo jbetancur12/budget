@@ -27,6 +27,9 @@ async function main() {
 }
 
 main().catch((err) => {
-  logger.error({ error: (err as Error).message, stack: (err as Error).stack }, 'Failed to start server');
+  logger.error(
+    { error: (err as Error).message, stack: (err as Error).stack },
+    'Failed to start server',
+  );
   process.exit(1);
 });

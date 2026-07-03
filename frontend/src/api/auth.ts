@@ -13,7 +13,9 @@ export async function login(email: string, password: string): Promise<LoginResul
   });
 }
 
-export async function refresh(refreshToken: string): Promise<{ accessToken: string; refreshToken: string }> {
+export async function refresh(
+  refreshToken: string,
+): Promise<{ accessToken: string; refreshToken: string }> {
   return request<{ accessToken: string; refreshToken: string }>('/auth/refresh', {
     method: 'POST',
     body: JSON.stringify({ refreshToken }),

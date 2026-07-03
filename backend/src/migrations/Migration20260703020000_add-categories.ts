@@ -62,7 +62,9 @@ export class AddCategories extends Migration {
 
     this.addSql('ALTER TABLE "item" ALTER COLUMN "category_id" SET NOT NULL;');
     this.addSql('ALTER TABLE "item" DROP COLUMN "category";');
-    this.addSql('ALTER TABLE "item" ADD CONSTRAINT "item_category_id_foreign" FOREIGN KEY ("category_id") REFERENCES "category" (id) ON DELETE RESTRICT;');
+    this.addSql(
+      'ALTER TABLE "item" ADD CONSTRAINT "item_category_id_foreign" FOREIGN KEY ("category_id") REFERENCES "category" (id) ON DELETE RESTRICT;',
+    );
     this.addSql('CREATE INDEX IF NOT EXISTS "item_category_id_index" ON "item" ("category_id");');
   }
 

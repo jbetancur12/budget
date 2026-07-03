@@ -90,9 +90,17 @@ export class PocketService {
 
     // Deposit: take from monthly balance, add to pocket
     if (monthOffset !== undefined) {
-      const items = await this.em.find(Item, { monthOffset, user: userId }, { populate: ['category'] });
-      const totalIncome = items.filter((i) => (i.category as any)?.name === 'Ingresos').reduce((s, i) => s + i.amount, 0);
-      const totalExpenses = items.filter((i) => (i.category as any)?.name !== 'Ingresos').reduce((s, i) => s + i.amount, 0);
+      const items = await this.em.find(
+        Item,
+        { monthOffset, user: userId },
+        { populate: ['category'] },
+      );
+      const totalIncome = items
+        .filter((i) => i.category?.name === 'Ingresos')
+        .reduce((s, i) => s + i.amount, 0);
+      const totalExpenses = items
+        .filter((i) => i.category?.name !== 'Ingresos')
+        .reduce((s, i) => s + i.amount, 0);
       const available = totalIncome - totalExpenses;
 
       if (amount > available) {

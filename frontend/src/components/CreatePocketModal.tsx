@@ -26,7 +26,12 @@ interface Props {
 }
 
 export function CreatePocketModal({ onClose, onCreated }: Props) {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<CreatePocketForm>({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<CreatePocketForm>({
     defaultValues: {
       name: '',
       goal: '',
@@ -49,11 +54,20 @@ export function CreatePocketModal({ onClose, onCreated }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 sm:p-4" onClick={onClose}>
-      <div className="bg-card sm:border border-border sm:rounded-3xl rounded-t-3xl shadow-2xl max-w-md w-full overflow-hidden" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 sm:p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-card sm:border border-border sm:rounded-3xl rounded-t-3xl shadow-2xl max-w-md w-full overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="px-6 py-5 border-b border-border flex items-center justify-between">
           <h2 className="text-lg font-bold text-foreground">Nuevo Bolsillo</h2>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground">
+          <button
+            onClick={onClose}
+            className="p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -109,9 +123,13 @@ export function CreatePocketModal({ onClose, onCreated }: Props) {
               {ICONS.map(({ value, label }) => (
                 <label key={value} className="cursor-pointer flex flex-col items-center gap-1">
                   <input type="radio" value={value} {...register('icon')} className="sr-only" />
-                  <div className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center transition-all ${
-                    watch('icon') === value ? 'border-primary bg-primary/10' : 'border-border hover:border-muted-foreground'
-                  }`}>
+                  <div
+                    className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center transition-all ${
+                      watch('icon') === value
+                        ? 'border-primary bg-primary/10'
+                        : 'border-border hover:border-muted-foreground'
+                    }`}
+                  >
                     <PocketIcon icon={value} color={selectedColor} />
                   </div>
                   <span className="text-[10px] text-muted-foreground">{label}</span>

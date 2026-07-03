@@ -13,7 +13,10 @@ interface TokenPair {
 export class AuthService {
   constructor(private em: EntityManager) {}
 
-  async login(email: string, password: string): Promise<TokenPair & { user: { id: number; email: string; name: string } }> {
+  async login(
+    email: string,
+    password: string,
+  ): Promise<TokenPair & { user: { id: number; email: string; name: string } }> {
     const user = await this.em.findOne(User, { email });
     if (!user) throw new UnauthorizedError('Invalid credentials');
 
@@ -28,7 +31,11 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string): Promise<TokenPair> {
-    const payload = jwt.verify(refreshToken, config.jwt.refreshSecret) as { userId: number; email: string; role: string };
+    const payload = jwt.verify(refreshToken, config.jwt.refreshSecret) as {
+      userId: number;
+      email: string;
+      role: string;
+    };
     const user = await this.em.findOne(User, { id: payload.userId, refreshToken });
 
     if (!user) throw new UnauthorizedError('Invalid refresh token');
@@ -40,14 +47,19 @@ export class AuthService {
     return tokens;
   }
 
-  async changePassword(userId: number, currentPassword: string, newPassword: string): Promise<void> {
+  async changePassword(
+    userId: number,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
     const user = await this.em.findOne(User, userId);
     if (!user) throw new UnauthorizedError('User not found');
 
     const valid = await bcrypt.compare(currentPassword, user.password);
     if (!valid) throw new UnauthorizedError('Current password is incorrect');
 
-    if (newPassword.length < 8) throw new ValidationError('New password must be at least 8 characters');
+    if (newPassword.length < 8)
+      throw new ValidationError('New password must be at least 8 characters');
 
     user.password = await bcrypt.hash(newPassword, 12);
     user.refreshToken = undefined;
@@ -63,17 +75,13 @@ export class AuthService {
   }
 
   private generateTokens(userId: number, email: string, role: string): TokenPair {
-    const accessToken = jwt.sign(
-      { userId, email, role },
-      config.jwt.accessSecret,
-      { expiresIn: config.jwt.accessExpiresIn } as jwt.SignOptions,
-    );
+    const accessToken = jwt.sign({ userId, email, role }, config.jwt.accessSecret, {
+      expiresIn: config.jwt.accessExpiresIn,
+    } as jwt.SignOptions);
 
-    const refreshToken = jwt.sign(
-      { userId, email, role },
-      config.jwt.refreshSecret,
-      { expiresIn: config.jwt.refreshExpiresIn } as jwt.SignOptions,
-    );
+    const refreshToken = jwt.sign({ userId, email, role }, config.jwt.refreshSecret, {
+      expiresIn: config.jwt.refreshExpiresIn,
+    } as jwt.SignOptions);
 
     return { accessToken, refreshToken };
   }

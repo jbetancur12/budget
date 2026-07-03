@@ -7,7 +7,10 @@ export const createItemSchema = z.object({
     type: z.enum(['Fijo', 'Variable']).optional().default('Variable'),
     categoryId: z.number().int(),
     monthOffset: z.number().int().optional().default(0),
-    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional(),
     recurring: z.boolean().optional().default(false),
   }),
 });
@@ -19,7 +22,10 @@ export const updateItemSchema = z.object({
     type: z.enum(['Fijo', 'Variable']).optional(),
     recurring: z.boolean().optional(),
     categoryId: z.number().int().optional(),
-    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional(),
   }),
   params: z.object({
     id: z.string().regex(/^\d+$/, 'ID must be a number'),

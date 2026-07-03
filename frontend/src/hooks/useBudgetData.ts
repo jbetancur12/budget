@@ -1,6 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as api from '../api';
-import type { ItemData, CategoryData, PocketData, ChartData, ChartRow, ItemHandlers, ItemType } from '../types';
+import type {
+  ItemData,
+  CategoryData,
+  PocketData,
+  ChartData,
+  ChartRow,
+  ItemHandlers,
+  ItemType,
+} from '../types';
 
 interface BudgetData {
   categories: CategoryData[];
@@ -93,7 +101,15 @@ export function useBudgetData(monthOffset: number | null) {
           refresh(offset, search || undefined);
         },
         onAdd: async (name: string, amount: number, date?: string, recurring?: boolean) => {
-          await api.createItem({ name, amount, type, categoryId: catId, monthOffset: offset, date, recurring });
+          await api.createItem({
+            name,
+            amount,
+            type,
+            categoryId: catId,
+            monthOffset: offset,
+            date,
+            recurring,
+          });
           refresh(offset, search || undefined);
         },
         onRecurringToggle: async (id: number, recurring: boolean) => {

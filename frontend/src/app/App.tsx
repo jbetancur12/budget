@@ -10,7 +10,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useMonth } from '../hooks/useMonth';
 import { useBudgetData } from '../hooks/useBudgetData';
 import { createItem } from '../api';
-import type { Tab, ItemData } from '../types';
+import type { Tab } from '../types';
 
 export default function App() {
   const { user, loading, logout } = useAuth();
@@ -23,8 +23,18 @@ export default function App() {
     if (user) {
       const meta = document.querySelector('meta[name=viewport]');
       if (meta) {
-        meta.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0');
-        setTimeout(() => meta.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover'), 300);
+        meta.setAttribute(
+          'content',
+          'width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0',
+        );
+        setTimeout(
+          () =>
+            meta.setAttribute(
+              'content',
+              'width=device-width, initial-scale=1.0, viewport-fit=cover',
+            ),
+          300,
+        );
       }
     }
   }, [user]);
@@ -40,17 +50,22 @@ export default function App() {
   if (!user) return <LoginPage />;
 
   const {
-    categories, incomeCategories, expenseCategories, itemsByCategory,
-    pockets, chartHistory, search, setSearch, makeHandlers, updatePockets, refresh,
+    categories,
+    incomeCategories,
+    expenseCategories,
+    itemsByCategory,
+    pockets,
+    chartHistory,
+    search,
+    setSearch,
+    makeHandlers,
+    updatePockets,
+    refresh,
   } = budgetData;
 
   // Computed from categories for backward compat with Dashboard/Pockets
-  const allItems = Object.values(itemsByCategory).flat();
   const incomeItems = incomeCategories.flatMap((c) => itemsByCategory[c.id] ?? []);
   const expenseItems = expenseCategories.flatMap((c) => itemsByCategory[c.id] ?? []);
-
-  const totalIncome = incomeItems.reduce((s, i) => s + i.amount, 0);
-  const totalExpenses = expenseItems.reduce((s, i) => s + i.amount, 0);
 
   return (
     <div className="h-full bg-background flex flex-col">
@@ -78,8 +93,14 @@ export default function App() {
             onGoToPockets={() => setTab('pockets')}
             categories={categories}
             onQuickAdd={async (name, amount, catId, date) => {
-              const cat = categories.find((c) => c.id === catId);
-              await createItem({ name, amount, type: 'Variable', categoryId: catId, monthOffset, date });
+              await createItem({
+                name,
+                amount,
+                type: 'Variable',
+                categoryId: catId,
+                monthOffset,
+                date,
+              });
               refresh(monthOffset, search || undefined);
             }}
           />

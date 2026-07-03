@@ -20,7 +20,9 @@ export function CategoryModal({ onClose }: Props) {
     setCategories(cats);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
   const handleCreate = async () => {
     if (!newName.trim()) return;
@@ -29,8 +31,8 @@ export function CategoryModal({ onClose }: Props) {
       await api.createCategory({ name: newName.trim(), type: newType });
       setNewName('');
       await load();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Error');
     }
   };
 
@@ -41,8 +43,8 @@ export function CategoryModal({ onClose }: Props) {
       await api.updateCategory(id, { name: editName.trim() });
       setEditingId(null);
       await load();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Error');
     }
   };
 
@@ -51,24 +53,35 @@ export function CategoryModal({ onClose }: Props) {
     try {
       await api.deleteCategory(id);
       await load();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Error');
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 sm:p-4" onClick={onClose}>
-      <div className="bg-card sm:border border-border sm:rounded-3xl rounded-t-3xl shadow-2xl max-w-md w-full overflow-hidden" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 sm:p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-card sm:border border-border sm:rounded-3xl rounded-t-3xl shadow-2xl max-w-md w-full overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="px-6 py-5 border-b border-border flex items-center justify-between">
           <h2 className="text-lg font-bold text-foreground">Categorías</h2>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground">
+          <button
+            onClick={onClose}
+            className="p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         <div className="p-6 space-y-4">
           {error && (
-            <div className="bg-destructive/10 border border-destructive/20 rounded-xl px-4 py-3 text-sm text-destructive font-medium">{error}</div>
+            <div className="bg-destructive/10 border border-destructive/20 rounded-xl px-4 py-3 text-sm text-destructive font-medium">
+              {error}
+            </div>
           )}
 
           <div className="flex gap-2">
@@ -83,19 +96,29 @@ export function CategoryModal({ onClose }: Props) {
             <input
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleCreate(); }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleCreate();
+              }}
               className="flex-1 border border-border rounded-xl px-3 py-2 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               placeholder="Nueva categoría..."
             />
-            <button onClick={handleCreate} className="p-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+            <button
+              onClick={handleCreate}
+              className="p-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
               <Plus className="w-4 h-4" />
             </button>
           </div>
 
           <div className="space-y-1">
             {categories.map((cat) => (
-              <div key={cat.id} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted/50 transition-colors group">
-                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${cat.type === 'income' ? 'bg-chart-2/10 text-chart-2' : 'bg-chart-4/10 text-chart-4'}`}>
+              <div
+                key={cat.id}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted/50 transition-colors group"
+              >
+                <span
+                  className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${cat.type === 'income' ? 'bg-chart-2/10 text-chart-2' : 'bg-chart-4/10 text-chart-4'}`}
+                >
                   {cat.type === 'income' ? 'Ingreso' : 'Gasto'}
                 </span>
                 {editingId === cat.id ? (
@@ -114,7 +137,10 @@ export function CategoryModal({ onClose }: Props) {
                   <span className="flex-1 text-sm text-foreground">{cat.name}</span>
                 )}
                 <button
-                  onClick={() => { setEditingId(cat.id); setEditName(cat.name); }}
+                  onClick={() => {
+                    setEditingId(cat.id);
+                    setEditName(cat.name);
+                  }}
                   className="p-1 rounded-lg text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-all"
                 >
                   <Pencil className="w-3.5 h-3.5" />

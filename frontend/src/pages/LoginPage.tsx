@@ -14,7 +14,11 @@ export function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>({
     defaultValues: { email: '', password: '' },
   });
 
@@ -41,7 +45,10 @@ export function LoginPage() {
           <p className="text-sm text-muted-foreground mt-1">Inicia sesión para continuar</p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="bg-card border border-border rounded-2xl p-6 shadow-sm space-y-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="bg-card border border-border rounded-2xl p-6 shadow-sm space-y-4"
+        >
           {error && (
             <div className="bg-destructive/10 border border-destructive/20 rounded-xl px-4 py-3 text-sm text-destructive font-medium">
               {error}

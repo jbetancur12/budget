@@ -1,4 +1,4 @@
-import { AlertTriangle, X } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 
 interface ConfirmModalProps {
   title: string;
@@ -8,10 +8,22 @@ interface ConfirmModalProps {
   onCancel: () => void;
 }
 
-export function ConfirmModal({ title, message, confirmLabel = 'Eliminar', onConfirm, onCancel }: ConfirmModalProps) {
+export function ConfirmModal({
+  title,
+  message,
+  confirmLabel = 'Eliminar',
+  onConfirm,
+  onCancel,
+}: ConfirmModalProps) {
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 sm:p-4" onClick={onCancel}>
-      <div className="bg-card sm:border border-border sm:rounded-3xl rounded-t-3xl shadow-2xl max-w-sm w-full overflow-hidden" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 sm:p-4"
+      onClick={onCancel}
+    >
+      <div
+        className="bg-card sm:border border-border sm:rounded-3xl rounded-t-3xl shadow-2xl max-w-sm w-full overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="p-6 text-center">
           <div className="w-12 h-12 bg-destructive/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <AlertTriangle className="w-6 h-6 text-destructive" />
