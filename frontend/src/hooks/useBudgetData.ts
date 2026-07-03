@@ -99,8 +99,13 @@ export function useBudgetData(monthOffset: number | null) {
           refresh(offset, search || undefined);
         },
         onDelete: async (id: number) => {
-          const item = Object.values(data.itemsByCategory).flat().find((i) => i.id === id);
-          if (item) { deletedRef.current = item; setDeletedItem(item); }
+          const item = Object.values(data.itemsByCategory)
+            .flat()
+            .find((i) => i.id === id);
+          if (item) {
+            deletedRef.current = item;
+            setDeletedItem(item);
+          }
           await api.deleteItem(id);
           refresh(offset, search || undefined);
         },
@@ -159,7 +164,10 @@ export function useBudgetData(monthOffset: number | null) {
     if (monthOffset !== null) refresh(monthOffset, search || undefined);
   }, [monthOffset, search, refresh]);
 
-  const clearLastDeleted = useCallback(() => { deletedRef.current = null; setDeletedItem(null); }, []);
+  const clearLastDeleted = useCallback(() => {
+    deletedRef.current = null;
+    setDeletedItem(null);
+  }, []);
 
   return {
     ...data,

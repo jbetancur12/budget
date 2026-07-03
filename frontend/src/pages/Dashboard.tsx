@@ -76,7 +76,13 @@ export function Dashboard({
           className="p-2 rounded-xl border border-border hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
           title="Ajustar % de ahorro"
         >
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            className="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <circle cx="12" cy="12" r="3" />
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
           </svg>
@@ -245,11 +251,32 @@ export function Dashboard({
       </div>
 
       {(() => {
-const stats = [
-  { label: 'Gastos Fijos', value: totalFixed, pct: safePercent(totalFixed, totalExpenses), color: 'bg-chart-1', suffix: 'del gasto total', green: false },
-  { label: 'Gastos Variables', value: totalVariable, pct: safePercent(totalVariable, totalExpenses), color: 'bg-chart-2', suffix: 'del gasto total', green: false },
-  { label: 'Tasa de Ahorro', value: savings, pct: safePercent(savings, totalIncome), color: 'bg-accent', suffix: 'sobre ingresos', green: true },
-] as const;
+        const stats = [
+          {
+            label: 'Gastos Fijos',
+            value: totalFixed,
+            pct: safePercent(totalFixed, totalExpenses),
+            color: 'bg-chart-1',
+            suffix: 'del gasto total',
+            green: false,
+          },
+          {
+            label: 'Gastos Variables',
+            value: totalVariable,
+            pct: safePercent(totalVariable, totalExpenses),
+            color: 'bg-chart-2',
+            suffix: 'del gasto total',
+            green: false,
+          },
+          {
+            label: 'Tasa de Ahorro',
+            value: savings,
+            pct: safePercent(savings, totalIncome),
+            color: 'bg-accent',
+            suffix: 'sobre ingresos',
+            green: true,
+          },
+        ] as const;
         return (
           <>
             <div className="sm:hidden bg-card border border-border rounded-2xl overflow-hidden shadow-sm animate-in animate-in-d3">
@@ -263,9 +290,7 @@ const stats = [
                     {label}
                   </span>
                   <div className="text-right shrink-0">
-                    <p
-                      className={`font-mono text-sm font-bold text-foreground`}
-                    >
+                    <p className={`font-mono text-sm font-bold text-foreground`}>
                       {green ? `${pct}%` : fmt(value)}
                     </p>
                     <p className="text-[10px] text-muted-foreground">
@@ -292,9 +317,7 @@ const stats = [
                   <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-1">
                     {label}
                   </p>
-                  <p
-                    className={`font-mono font-bold text-lg text-foreground`}
-                  >
+                  <p className={`font-mono font-bold text-lg text-foreground`}>
                     {green ? `${pct}%` : fmt(value)}
                   </p>
                   <div className="mt-2 h-1.5 bg-muted rounded-full overflow-hidden">
