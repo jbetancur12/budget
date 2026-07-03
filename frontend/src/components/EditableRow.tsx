@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pencil, Trash2, RefreshCw } from 'lucide-react';
+import { Trash2, RefreshCw } from 'lucide-react';
 import { fmt, parseAmount, formatInput } from '../utils';
 import type { Item } from '../types';
 
@@ -140,17 +140,11 @@ export function EditableRow({ item, onNameChange, onAmountChange, onDateChange, 
           </span>
         </td>
       )}
-      <td className="py-2.5 px-3 w-16">
+      <td className="py-2.5 px-3 w-12">
         <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
-            onClick={startNameEdit}
-            className="p-1 rounded-lg hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
-          >
-            <Pencil className="w-3.5 h-3.5" />
-          </button>
-          <button
             onClick={() => onDelete(item.id)}
-            className="p-1 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
+            className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
