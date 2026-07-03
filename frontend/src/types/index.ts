@@ -49,6 +49,8 @@ export interface ChartRow {
 
 export interface ItemHandlers {
   onAmountChange: (id: number, amount: number) => Promise<void>;
+  onNameChange: (id: number, name: string) => Promise<void>;
+  onDateChange: (id: number, date: string) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
   onAdd: (name: string, amount: number, date?: string, recurring?: boolean) => Promise<void>;
   onRecurringToggle?: (id: number, recurring: boolean) => Promise<void>;

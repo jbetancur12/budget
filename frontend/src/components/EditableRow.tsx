@@ -5,31 +5,75 @@ import type { Item } from '../types';
 
 interface EditableRowProps {
   item: Item;
+  onNameChange: (id: number, name: string) => void;
   onAmountChange: (id: number, amount: number) => void;
+  onDateChange: (id: number, date: string) => void;
   onDelete: (id: number) => void;
   showType?: boolean;
   onRecurringToggle?: (id: number, recurring: boolean) => Promise<void>;
 }
 
-export function EditableRow({ item, onAmountChange, onDelete, showType, onRecurringToggle }: EditableRowProps) {
-  const [editing, setEditing] = useState(false);
-  const [value, setValue] = useState('');
+export function EditableRow({ item, onNameChange, onAmountChange, onDateChange, onDelete, showType, onRecurringToggle }: EditableRowProps) {
+  const [editingAmount, setEditingAmount] = useState(false);
+  const [amountValue, setAmountValue] = useState('');
+  const [editingName, setEditingName] = useState(false);
+  const [nameValue, setNameValue] = useState('');
+  const [editingDate, setEditingDate] = useState(false);
+  const [dateValue, setDateValue] = useState('');
 
-  const startEdit = () => {
-    setValue(formatInput(String(item.amount)));
-    setEditing(true);
+  const startAmountEdit = () => {
+    setAmountValue(formatInput(String(item.amount)));
+    setEditingAmount(true);
   };
 
-  const commit = () => {
-    onAmountChange(item.id, parseAmount(value));
-    setEditing(false);
+  const commitAmount = () => {
+    onAmountChange(item.id, parseAmount(amountValue));
+    setEditingAmount(false);
+  };
+
+  const startNameEdit = () => {
+    setNameValue(item.name);
+    setEditingName(true);
+  };
+
+  const commitName = () => {
+    if (nameValue.trim()) {
+      onNameChange(item.id, nameValue.trim());
+    }
+    setEditingName(false);
+  };
+
+  const startDateEdit = () => {
+    setDateValue(item.date?.slice(0, 10) ?? '');
+    setEditingDate(true);
+  };
+
+  const commitDate = () => {
+    if (dateValue) onDateChange(item.id, dateValue);
+    setEditingDate(false);
   };
 
   return (
     <tr className="group border-b border-border/40 last:border-0 hover:bg-primary/[0.03] transition-colors">
       <td className="py-2.5 px-4 text-sm text-foreground">
         <div className="flex items-center gap-1.5">
-          {item.name}
+          {editingName ? (
+            <input
+              autoFocus
+              className="text-sm border-2 border-primary rounded-lg px-2 py-1 w-full bg-card focus:outline-none focus:ring-2 focus:ring-primary/20"
+              value={nameValue}
+              onChange={(e) => setNameValue(e.target.value)}
+              onBlur={commitName}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') commitName();
+                if (e.key === 'Escape') setEditingName(false);
+              }}
+            />
+          ) : (
+            <span className="cursor-pointer hover:text-primary transition-colors" onClick={startNameEdit}>
+              {item.name}
+            </span>
+          )}
           {onRecurringToggle && (
             <button
               onClick={(e) => { e.stopPropagation(); onRecurringToggle(item.id, !item.recurring); }}
@@ -42,25 +86,42 @@ export function EditableRow({ item, onAmountChange, onDelete, showType, onRecurr
         </div>
       </td>
       <td className="py-2.5 px-4 text-xs text-muted-foreground w-28">
-        {item.date?.slice(0, 10)}
+        {editingDate ? (
+          <input
+            type="date"
+            autoFocus
+            className="text-xs border-2 border-primary rounded-lg px-2 py-1 w-full bg-card focus:outline-none focus:ring-2 focus:ring-primary/20"
+            value={dateValue}
+            onChange={(e) => setDateValue(e.target.value)}
+            onBlur={commitDate}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') commitDate();
+              if (e.key === 'Escape') setEditingDate(false);
+            }}
+          />
+        ) : (
+          <span className="cursor-pointer hover:text-primary transition-colors" onClick={startDateEdit}>
+            {item.date?.slice(0, 10)}
+          </span>
+        )}
       </td>
       <td className="py-2.5 px-4 w-44">
-        {editing ? (
+        {editingAmount ? (
           <input
             autoFocus
             className="font-mono text-sm w-36 border-2 border-primary rounded-lg px-2 py-1 bg-card focus:outline-none focus:ring-2 focus:ring-primary/20"
-            value={value}
-            onChange={(e) => setValue(formatInput(e.target.value))}
-            onBlur={commit}
+            value={amountValue}
+            onChange={(e) => setAmountValue(formatInput(e.target.value))}
+            onBlur={commitAmount}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') commit();
-              if (e.key === 'Escape') setEditing(false);
+              if (e.key === 'Enter') commitAmount();
+              if (e.key === 'Escape') setEditingAmount(false);
             }}
           />
         ) : (
           <span
             className="font-mono text-sm cursor-pointer hover:text-primary transition-colors"
-            onClick={startEdit}
+            onClick={startAmountEdit}
           >
             {fmt(item.amount)}
           </span>
@@ -82,7 +143,7 @@ export function EditableRow({ item, onAmountChange, onDelete, showType, onRecurr
       <td className="py-2.5 px-3 w-16">
         <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
-            onClick={startEdit}
+            onClick={startNameEdit}
             className="p-1 rounded-lg hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
           >
             <Pencil className="w-3.5 h-3.5" />

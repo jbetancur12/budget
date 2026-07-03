@@ -22,7 +22,7 @@ export async function createItem(data: {
   });
 }
 
-export async function updateItem(id: number, data: { amount?: number; name?: string; type?: string; recurring?: boolean }): Promise<ItemData> {
+export async function updateItem(id: number, data: { amount?: number; name?: string; type?: string; recurring?: boolean; date?: string }): Promise<ItemData> {
   return request<ItemData>(`/items/${id}`, {
     method: 'PUT',
     body: JSON.stringify(data),

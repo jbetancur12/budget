@@ -88,6 +88,16 @@ export function useBudgetData(monthOffset: number | null) {
           const items = await loadCategory(category, offset);
           setData((prev) => updateCategory(prev, category, items));
         },
+        onNameChange: async (id: number, name: string) => {
+          await api.updateItem(id, { name });
+          const items = await loadCategory(category, offset);
+          setData((prev) => updateCategory(prev, category, items));
+        },
+        onDateChange: async (id: number, date: string) => {
+          await api.updateItem(id, { date });
+          const items = await loadCategory(category, offset);
+          setData((prev) => updateCategory(prev, category, items));
+        },
         onDelete: async (id: number) => {
           await api.deleteItem(id);
           const items = await loadCategory(category, offset);

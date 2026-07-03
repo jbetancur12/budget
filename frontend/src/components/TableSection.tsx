@@ -17,6 +17,8 @@ interface TableSectionProps {
   isOpen?: boolean;
   onToggle?: () => void;
   onAmountChange: (id: number, amount: number) => Promise<void>;
+  onNameChange: (id: number, name: string) => Promise<void>;
+  onDateChange: (id: number, date: string) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
   onAdd: (name: string, amount: number, date?: string, recurring?: boolean) => Promise<void>;
   onRecurringToggle?: (id: number, recurring: boolean) => Promise<void>;
@@ -33,6 +35,8 @@ export function TableSection({
   isOpen = true,
   onToggle,
   onAmountChange,
+  onNameChange,
+  onDateChange,
   onDelete,
   onAdd,
   onRecurringToggle,
@@ -68,7 +72,9 @@ export function TableSection({
                 <EditableRow
                   key={item.id}
                   item={item}
+                  onNameChange={onNameChange}
                   onAmountChange={onAmountChange}
+                  onDateChange={onDateChange}
                   onDelete={(id) => setDeleting({ id, name: item.name })}
                   showType={showType}
                   onRecurringToggle={onRecurringToggle}
