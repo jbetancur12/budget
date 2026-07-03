@@ -70,7 +70,7 @@ export function EditableRow({ item, onNameChange, onAmountChange, onDateChange, 
               }}
             />
           ) : (
-            <span className="cursor-pointer hover:text-primary transition-colors" onClick={startNameEdit}>
+            <span className="cursor-pointer hover:text-primary transition-colors" onClick={startNameEdit} title="Click para editar nombre">
               {item.name}
             </span>
           )}
@@ -100,7 +100,7 @@ export function EditableRow({ item, onNameChange, onAmountChange, onDateChange, 
             }}
           />
         ) : (
-          <span className="cursor-pointer hover:text-primary transition-colors" onClick={startDateEdit}>
+          <span className="cursor-pointer hover:text-primary transition-colors" onClick={startDateEdit} title="Click para editar fecha">
             {item.date?.slice(0, 10)}
           </span>
         )}
@@ -122,6 +122,7 @@ export function EditableRow({ item, onNameChange, onAmountChange, onDateChange, 
           <span
             className="font-mono text-sm cursor-pointer hover:text-primary transition-colors"
             onClick={startAmountEdit}
+            title="Click para editar monto"
           >
             {fmt(item.amount)}
           </span>
