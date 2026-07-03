@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronUp, ChevronDown, Plus } from 'lucide-react';
 import { EditableRow } from './EditableRow';
 import { AddRow } from './AddRow';
+import { ConfirmModal } from './ConfirmModal';
 import { fmt } from '../utils';
 import type { Item, ItemType } from '../types';
 
@@ -35,6 +36,7 @@ export function TableSection({
   onAdd,
 }: TableSectionProps) {
   const [adding, setAdding] = useState(false);
+  const [deleting, setDeleting] = useState<{ id: number; name: string } | null>(null);
   const closed = collapsible && !isOpen;
 
   return (
@@ -65,7 +67,7 @@ export function TableSection({
                   key={item.id}
                   item={item}
                   onAmountChange={onAmountChange}
-                  onDelete={onDelete}
+                  onDelete={(id) => setDeleting({ id, name: item.name })}
                   showType={showType}
                 />
               ))}
@@ -92,6 +94,19 @@ export function TableSection({
             </button>
           )}
         </div>
+      )}
+
+      {deleting && (
+        <ConfirmModal
+          title="Eliminar ítem"
+          message={`¿Estás seguro de eliminar "${deleting.name}"?`}
+          confirmLabel="Eliminar"
+          onConfirm={async () => {
+            await onDelete(deleting.id);
+            setDeleting(null);
+          }}
+          onCancel={() => setDeleting(null)}
+        />
       )}
     </div>
   );
