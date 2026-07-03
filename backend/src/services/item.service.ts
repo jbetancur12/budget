@@ -33,7 +33,7 @@ export class ItemService {
     if (query.category) where.category = query.category;
     if (query.monthOffset !== undefined) where.monthOffset = query.monthOffset;
     if (query.search) where.name = { $ilike: `%${query.search}%` };
-    return this.em.find(Item, where, { orderBy: { id: 'ASC' } });
+    return this.em.find(Item, where, { orderBy: { date: 'DESC' } });
   }
 
   async create(userId: number, data: CreateItemData) {
