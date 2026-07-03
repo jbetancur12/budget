@@ -121,8 +121,18 @@ export function Transactions({
 
       {onExpandAll && onCollapseAll && (
         <div className="flex gap-2 mb-4">
-          <button onClick={onExpandAll} className="text-xs px-3 py-1.5 border border-border rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground font-semibold">Expandir todo</button>
-          <button onClick={onCollapseAll} className="text-xs px-3 py-1.5 border border-border rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground font-semibold">Colapsar todo</button>
+          <button
+            onClick={onExpandAll}
+            className="text-xs px-3 py-1.5 border border-border rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground font-semibold"
+          >
+            Expandir todo
+          </button>
+          <button
+            onClick={onCollapseAll}
+            className="text-xs px-3 py-1.5 border border-border rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground font-semibold"
+          >
+            Colapsar todo
+          </button>
         </div>
       )}
       <div className="mb-5">

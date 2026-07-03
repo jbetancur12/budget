@@ -57,12 +57,17 @@ export function Dashboard({
       .fetchSettings()
       .then((s) => setSavingsRate(s.savingsRate))
       .catch(() => {});
-    api.fetchDebts().then((d) => {
-      setDebtTotals({
-        lent: d.filter((x) => x.type === 'lent').reduce((s, x) => s + x.remainingBalance, 0),
-        borrowed: d.filter((x) => x.type === 'borrowed').reduce((s, x) => s + x.remainingBalance, 0),
-      });
-    }).catch(() => {});
+    api
+      .fetchDebts()
+      .then((d) => {
+        setDebtTotals({
+          lent: d.filter((x) => x.type === 'lent').reduce((s, x) => s + x.remainingBalance, 0),
+          borrowed: d
+            .filter((x) => x.type === 'borrowed')
+            .reduce((s, x) => s + x.remainingBalance, 0),
+        });
+      })
+      .catch(() => {});
   }, []);
   const totalIncome = income.reduce((s, i) => s + i.amount, 0);
   const totalServices = services.reduce((s, i) => s + i.amount, 0);
@@ -144,7 +149,13 @@ export function Dashboard({
           <div className="mb-4">
             <div className="flex items-center gap-2">
               <h2 className="text-sm font-bold text-foreground">Comparativo Mensual</h2>
-              <button onClick={() => setShowYearStats(true)} className="text-xs text-primary font-semibold hover:underline" title="Ver estadísticas anuales">Ver anual</button>
+              <button
+                onClick={() => setShowYearStats(true)}
+                className="text-xs text-primary font-semibold hover:underline"
+                title="Ver estadísticas anuales"
+              >
+                Ver anual
+              </button>
             </div>
             <p className="text-xs text-muted-foreground">Ingresos vs. Gastos — últimos 6 meses</p>
           </div>
@@ -267,13 +278,17 @@ export function Dashboard({
           <div className="flex items-center gap-4 justify-between">
             {debtTotals.lent > 0 && (
               <div>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-semibold">Me deben</p>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-semibold">
+                  Me deben
+                </p>
                 <p className="font-mono font-bold text-chart-2">{fmt(debtTotals.lent)}</p>
               </div>
             )}
             {debtTotals.borrowed > 0 && (
               <div>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-semibold">Debo</p>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-semibold">
+                  Debo
+                </p>
                 <p className="font-mono font-bold text-destructive">{fmt(debtTotals.borrowed)}</p>
               </div>
             )}
@@ -383,7 +398,14 @@ export function Dashboard({
       )}
 
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
-      {showYearStats && <YearStatsModal history={chartHistory} currentIncome={totalIncome} currentExpenses={totalExpenses} onClose={() => setShowYearStats(false)} />}
+      {showYearStats && (
+        <YearStatsModal
+          history={chartHistory}
+          currentIncome={totalIncome}
+          currentExpenses={totalExpenses}
+          onClose={() => setShowYearStats(false)}
+        />
+      )}
     </div>
   );
 }

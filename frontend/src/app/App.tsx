@@ -120,8 +120,12 @@ export default function App() {
             monthLabel={monthLabel}
             openCategories={openCategories}
             onToggleCategory={(id) => setOpenCategories((o) => ({ ...o, [id]: !o[id] }))}
-            onExpandAll={() => setOpenCategories(Object.fromEntries(categories.map((c) => [c.id, true])))}
-            onCollapseAll={() => setOpenCategories(Object.fromEntries(categories.map((c) => [c.id, false])))}
+            onExpandAll={() =>
+              setOpenCategories(Object.fromEntries(categories.map((c) => [c.id, true])))
+            }
+            onCollapseAll={() =>
+              setOpenCategories(Object.fromEntries(categories.map((c) => [c.id, false])))
+            }
             makeHandlers={makeHandlers}
             search={search}
             onSearchChange={setSearch}

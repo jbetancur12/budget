@@ -72,7 +72,13 @@ export interface ItemHandlers {
   onDateChange: (id: number, date: string) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
   onDuplicate?: (id: number) => Promise<void>;
-  onAdd: (name: string, amount: number, date?: string, recurring?: boolean, notes?: string) => Promise<void>;
+  onAdd: (
+    name: string,
+    amount: number,
+    date?: string,
+    recurring?: boolean,
+    notes?: string,
+  ) => Promise<void>;
   onRecurringToggle?: (id: number, recurring: boolean) => Promise<void>;
   onNotesChange?: (id: number, notes: string) => Promise<void>;
   categoryId: number;
