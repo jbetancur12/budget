@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import {
-  TrendingUp, TrendingDown, Wallet, PiggyBank,
+  TrendingUp, TrendingDown, Wallet, PiggyBank, Plus,
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -8,8 +9,9 @@ import { SummaryCard } from '../components/SummaryCard';
 import { ChartTooltip } from '../components/ChartTooltip';
 import { MiniBar } from '../components/MiniBar';
 import { PocketIcon } from '../components/PocketIcon';
+import { QuickAddModal } from '../components/QuickAddModal';
 import { fmt, safePercent } from '../utils';
-import type { ItemData, PocketData, ChartRow } from '../types';
+import type { ItemData, PocketData, ChartRow, CategoryData } from '../types';
 
 interface DashboardProps {
   income: ItemData[];
@@ -20,11 +22,14 @@ interface DashboardProps {
   chartHistory: ChartRow[];
   shortLabel: string;
   onGoToPockets: () => void;
+  categories: CategoryData[];
+  onQuickAdd: (name: string, amount: number, categoryId: number, date?: string) => Promise<void>;
 }
 
 export function Dashboard({
-  income, services, loans, variableExp, pockets, chartHistory, shortLabel, onGoToPockets,
+  income, services, loans, variableExp, pockets, chartHistory, shortLabel, onGoToPockets, categories, onQuickAdd,
 }: DashboardProps) {
+  const [showQuickAdd, setShowQuickAdd] = useState(false);
   const totalIncome = income.reduce((s, i) => s + i.amount, 0);
   const totalServices = services.reduce((s, i) => s + i.amount, 0);
   const totalLoans = loans.reduce((s, i) => s + i.amount, 0);
@@ -134,6 +139,21 @@ export function Dashboard({
           </>
         );
       })()}
+
+      <button
+        onClick={() => setShowQuickAdd(true)}
+        className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-30 w-14 h-14 bg-primary text-primary-foreground rounded-2xl shadow-lg hover:bg-primary/90 transition-all active:scale-95 flex items-center justify-center"
+      >
+        <Plus className="w-6 h-6" />
+      </button>
+
+      {showQuickAdd && (
+        <QuickAddModal
+          categories={categories}
+          onAdd={onQuickAdd}
+          onClose={() => setShowQuickAdd(false)}
+        />
+      )}
     </div>
   );
 }

@@ -110,5 +110,5 @@ export function useBudgetData(monthOffset: number | null) {
     setData((prev) => ({ ...prev, pockets }));
   }, []);
 
-  return { ...data, search, setSearch, makeHandlers, updatePockets };
+  return { ...data, search, setSearch, makeHandlers, updatePockets, refresh };
 }

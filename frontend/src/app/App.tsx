@@ -9,6 +9,7 @@ import { LoginPage } from '../pages/LoginPage';
 import { useAuth } from '../hooks/useAuth';
 import { useMonth } from '../hooks/useMonth';
 import { useBudgetData } from '../hooks/useBudgetData';
+import { createItem } from '../api';
 import type { Tab, ItemData } from '../types';
 
 export default function App() {
@@ -40,7 +41,7 @@ export default function App() {
 
   const {
     categories, incomeCategories, expenseCategories, itemsByCategory,
-    pockets, chartHistory, search, setSearch, makeHandlers, updatePockets,
+    pockets, chartHistory, search, setSearch, makeHandlers, updatePockets, refresh,
   } = budgetData;
 
   // Computed from categories for backward compat with Dashboard/Pockets
@@ -75,6 +76,12 @@ export default function App() {
             chartHistory={chartHistory}
             shortLabel={shortLabel}
             onGoToPockets={() => setTab('pockets')}
+            categories={categories}
+            onQuickAdd={async (name, amount, catId, date) => {
+              const cat = categories.find((c) => c.id === catId);
+              await createItem({ name, amount, type: 'Variable', categoryId: catId, monthOffset, date });
+              refresh(monthOffset, search || undefined);
+            }}
           />
         )}
 
