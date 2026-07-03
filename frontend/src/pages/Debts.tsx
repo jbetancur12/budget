@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus, Handshake, UserCheck, Trash2, DollarSign } from 'lucide-react';
-import { fmt } from '../utils';
+import { fmt, formatInput, parseAmount } from '../utils';
 import * as api from '../api';
 import { ConfirmModal } from '../components/ConfirmModal';
 import type { DebtData } from '../types';
@@ -23,7 +23,7 @@ export function Debts() {
 
   const handleCreate = async () => {
     if (!newPerson.trim() || !newAmount) return;
-    const amount = parseInt(newAmount.replace(/[^\d]/g, '')) || 0;
+    const amount = parseAmount(newAmount);
     if (!amount) return;
     await api.createDebt({
       person: newPerson.trim(),
@@ -40,7 +40,7 @@ export function Debts() {
 
   const handlePayment = async () => {
     if (!paying || !payAmount) return;
-    const amount = parseInt(payAmount.replace(/[^\d]/g, '')) || 0;
+    const amount = parseAmount(payAmount);
     if (!amount || amount > paying.remainingBalance) return;
     await api.recordPayment(paying.id, amount);
     setPaying(null);
@@ -200,7 +200,7 @@ export function Debts() {
               />
               <input
                 value={newAmount}
-                onChange={(e) => setNewAmount(e.target.value.replace(/[^\d]/g, ''))}
+                onChange={(e) => setNewAmount(formatInput(e.target.value))}
                 className="w-full px-4 py-2.5 border border-border rounded-xl bg-background text-base font-mono"
                 placeholder="Monto"
               />
@@ -240,7 +240,7 @@ export function Debts() {
             <div className="p-6 space-y-4">
               <input
                 value={payAmount}
-                onChange={(e) => setPayAmount(e.target.value.replace(/[^\d]/g, ''))}
+                onChange={(e) => setPayAmount(formatInput(e.target.value))}
                 className="w-full px-4 py-2.5 border border-border rounded-xl bg-background text-base font-mono"
                 placeholder="Monto a pagar"
               />
