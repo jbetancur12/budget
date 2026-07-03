@@ -1,5 +1,6 @@
 import { Entity, Property, PrimaryKey, ManyToOne } from '@mikro-orm/core';
 import { User } from './User.js';
+import { Category } from './Category.js';
 
 @Entity()
 export class Item {
@@ -9,6 +10,9 @@ export class Item {
   @ManyToOne(() => User)
   user!: User;
 
+  @ManyToOne(() => Category)
+  category!: Category;
+
   @Property()
   name!: string;
 
@@ -17,9 +21,6 @@ export class Item {
 
   @Property({ type: 'string' })
   type!: 'Fijo' | 'Variable';
-
-  @Property()
-  category!: 'income' | 'services' | 'loans' | 'variable';
 
   @Property({ default: 0 })
   monthOffset!: number;

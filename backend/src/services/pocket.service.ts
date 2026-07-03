@@ -1,6 +1,7 @@
 import { EntityManager } from '@mikro-orm/core';
 import { Pocket } from '../entities/Pocket.js';
 import { Item } from '../entities/Item.js';
+import { Category } from '../entities/Category.js';
 import type { PocketIcon } from '../entities/Pocket.js';
 import { NotFoundError, BadRequestError } from '../utils/errors.js';
 
@@ -21,6 +22,14 @@ interface UpdatePocketData {
 
 export class PocketService {
   constructor(private em: EntityManager) {}
+
+  private async getIncomeCategory(userId: number): Promise<Category> {
+    return this.em.findOneOrFail(Category, { user: userId, name: 'Ingresos' });
+  }
+
+  private async getVariableCategory(userId: number): Promise<Category> {
+    return this.em.findOneOrFail(Category, { user: userId, name: 'Variables' });
+  }
 
   async findAll(userId: number) {
     return this.em.find(Pocket, { user: userId }, { orderBy: { id: 'ASC' } });
@@ -68,7 +77,7 @@ export class PocketService {
           name: `Retiro de ${pocket.name}`,
           amount: withdrawn,
           type: 'Variable',
-          category: 'income',
+          category: (await this.getIncomeCategory(userId)).id,
           monthOffset,
           user: userId,
           date: new Date().toISOString().slice(0, 10),
@@ -81,9 +90,9 @@ export class PocketService {
 
     // Deposit: take from monthly balance, add to pocket
     if (monthOffset !== undefined) {
-      const items = await this.em.find(Item, { monthOffset, user: userId });
-      const totalIncome = items.filter((i) => i.category === 'income').reduce((s, i) => s + i.amount, 0);
-      const totalExpenses = items.filter((i) => i.category !== 'income').reduce((s, i) => s + i.amount, 0);
+      const items = await this.em.find(Item, { monthOffset, user: userId }, { populate: ['category'] });
+      const totalIncome = items.filter((i) => (i.category as any)?.name === 'Ingresos').reduce((s, i) => s + i.amount, 0);
+      const totalExpenses = items.filter((i) => (i.category as any)?.name !== 'Ingresos').reduce((s, i) => s + i.amount, 0);
       const available = totalIncome - totalExpenses;
 
       if (amount > available) {
@@ -94,7 +103,7 @@ export class PocketService {
         name: `Ahorro: ${pocket.name}`,
         amount,
         type: 'Variable',
-        category: 'variable',
+        category: (await this.getVariableCategory(userId)).id,
         monthOffset,
         user: userId,
         date: new Date().toISOString().slice(0, 10),

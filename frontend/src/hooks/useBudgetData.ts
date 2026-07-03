@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as api from '../api';
-import type { ItemData, PocketData, ChartData, ChartRow, ItemHandlers, ItemType } from '../types';
+import type { ItemData, CategoryData, PocketData, ChartData, ChartRow, ItemHandlers, ItemType } from '../types';
 
 interface BudgetData {
-  income: ItemData[];
-  services: ItemData[];
-  loans: ItemData[];
-  variableExp: ItemData[];
+  categories: CategoryData[];
+  incomeCategories: CategoryData[];
+  expenseCategories: CategoryData[];
+  itemsByCategory: Record<number, ItemData[]>;
   pockets: PocketData[];
   chartHistory: ChartRow[];
   loading: boolean;
@@ -17,26 +17,12 @@ function toChartRow(r: ChartData): ChartRow {
   return { mes: r.monthLabel, ingresos: r.totalIncome, gastos: r.totalExpenses };
 }
 
-function updateCategory(prev: BudgetData, category: string, items: ItemData[]): BudgetData {
-  switch (category) {
-    case 'income': return { ...prev, income: items };
-    case 'services': return { ...prev, services: items };
-    case 'loans': return { ...prev, loans: items };
-    case 'variable': return { ...prev, variableExp: items };
-    default: return prev;
-  }
-}
-
-async function loadCategory(category: string, offset: number): Promise<ItemData[]> {
-  return api.fetchItems(category, offset);
-}
-
 export function useBudgetData(monthOffset: number | null) {
   const [data, setData] = useState<BudgetData>({
-    income: [],
-    services: [],
-    loans: [],
-    variableExp: [],
+    categories: [],
+    incomeCategories: [],
+    expenseCategories: [],
+    itemsByCategory: {},
     pockets: [],
     chartHistory: [],
     loading: true,
@@ -47,19 +33,25 @@ export function useBudgetData(monthOffset: number | null) {
   const refresh = useCallback(async (offset: number, searchTerm?: string) => {
     setData((prev) => ({ ...prev, loading: true, error: null }));
     try {
-      const [inc, svc, lns, varExp, pck, chart] = await Promise.all([
-        api.fetchItems('income', offset, searchTerm),
-        api.fetchItems('services', offset, searchTerm),
-        api.fetchItems('loans', offset, searchTerm),
-        api.fetchItems('variable', offset, searchTerm),
+      const [allItems, categories, pck, chart] = await Promise.all([
+        api.fetchItems(offset, searchTerm),
+        api.fetchCategories(),
         api.fetchPockets(),
         api.fetchChartHistory(),
       ]);
+
+      const itemsByCategory: Record<number, ItemData[]> = {};
+      for (const item of allItems) {
+        const catId = item.category.id;
+        if (!itemsByCategory[catId]) itemsByCategory[catId] = [];
+        itemsByCategory[catId].push(item);
+      }
+
       setData({
-        income: inc,
-        services: svc,
-        loans: lns,
-        variableExp: varExp,
+        categories,
+        incomeCategories: categories.filter((c) => c.type === 'income'),
+        expenseCategories: categories.filter((c) => c.type === 'expense'),
+        itemsByCategory,
         pockets: pck,
         chartHistory: chart.map(toChartRow),
         loading: false,
@@ -80,53 +72,43 @@ export function useBudgetData(monthOffset: number | null) {
   }, [monthOffset, search, refresh]);
 
   const makeHandlers = useCallback(
-    (category: string, type: ItemType): ItemHandlers => {
+    (catId: number, type: ItemType): ItemHandlers => {
       const offset = monthOffset ?? 0;
       return {
+        categoryId: catId,
         onAmountChange: async (id: number, amount: number) => {
           await api.updateItem(id, { amount });
-          const items = await loadCategory(category, offset);
-          setData((prev) => updateCategory(prev, category, items));
+          refresh(offset, search || undefined);
         },
         onNameChange: async (id: number, name: string) => {
           await api.updateItem(id, { name });
-          const items = await loadCategory(category, offset);
-          setData((prev) => updateCategory(prev, category, items));
+          refresh(offset, search || undefined);
         },
         onDateChange: async (id: number, date: string) => {
           await api.updateItem(id, { date });
-          const items = await loadCategory(category, offset);
-          setData((prev) => updateCategory(prev, category, items));
+          refresh(offset, search || undefined);
         },
         onDelete: async (id: number) => {
           await api.deleteItem(id);
-          const items = await loadCategory(category, offset);
-          setData((prev) => updateCategory(prev, category, items));
+          refresh(offset, search || undefined);
         },
         onAdd: async (name: string, amount: number, date?: string, recurring?: boolean) => {
-          await api.createItem({ name, amount, type, category, monthOffset: offset, date, recurring });
-          const items = await loadCategory(category, offset);
-          setData((prev) => updateCategory(prev, category, items));
+          await api.createItem({ name, amount, type, categoryId: catId, monthOffset: offset, date, recurring });
+          refresh(offset, search || undefined);
         },
         onRecurringToggle: async (id: number, recurring: boolean) => {
           await api.updateItem(id, { recurring });
-          const items = await loadCategory(category, offset);
-          setData((prev) => updateCategory(prev, category, items));
+          refresh(offset, search || undefined);
         },
       };
     },
-    [monthOffset],
+    [monthOffset, search, refresh],
   );
-
-  const incomeH = makeHandlers('income', 'Variable');
-  const servicesH = makeHandlers('services', 'Fijo');
-  const loansH = makeHandlers('loans', 'Fijo');
-  const variableH = makeHandlers('variable', 'Variable');
 
   const updatePockets = useCallback(async () => {
     const pockets = await api.fetchPockets();
     setData((prev) => ({ ...prev, pockets }));
   }, []);
 
-  return { ...data, incomeH, servicesH, loansH, variableH, updatePockets, search, setSearch };
+  return { ...data, search, setSearch, makeHandlers, updatePockets };
 }

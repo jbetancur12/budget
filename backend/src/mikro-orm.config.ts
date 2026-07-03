@@ -8,6 +8,7 @@ import { Item } from './entities/Item.js';
 import { Pocket } from './entities/Pocket.js';
 import { MonthlyHistory } from './entities/MonthlyHistory.js';
 import { User } from './entities/User.js';
+import { Category } from './entities/Category.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -17,7 +18,7 @@ export default defineConfig({
   port: config.db.port,
   user: config.db.user,
   password: config.db.password,
-  entities: [Item, Pocket, MonthlyHistory, User],
+  entities: [Item, Pocket, MonthlyHistory, User, Category],
   metadataProvider: TsMorphMetadataProvider,
   migrations: {
     path: join(__dirname, 'migrations'),

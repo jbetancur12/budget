@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import bcrypt from 'bcrypt';
 import { initORM } from '../db.js';
 import { User } from '../entities/User.js';
+import { Category } from '../entities/Category.js';
 
 const email = process.argv[2];
 const password = process.argv[3];
@@ -22,13 +23,19 @@ if (existing) {
 }
 
 const hashed = await bcrypt.hash(password, 12);
-em.create(User, {
+const user = em.create(User, {
   email,
   password: hashed,
   name: email.split('@')[0],
   role: 'user',
 } as never);
-
 await em.flush();
+
+em.create(Category, { name: 'Ingresos', type: 'income', user: user.id } as never);
+em.create(Category, { name: 'Servicios', type: 'expense', user: user.id } as never);
+em.create(Category, { name: 'Préstamos', type: 'expense', user: user.id } as never);
+em.create(Category, { name: 'Variables', type: 'expense', user: user.id } as never);
+await em.flush();
+
 console.log(`Usuario creado: ${email}`);
 await orm.close();

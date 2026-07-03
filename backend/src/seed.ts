@@ -5,6 +5,7 @@ import { Item } from './entities/Item.js';
 import { Pocket } from './entities/Pocket.js';
 import { MonthlyHistory } from './entities/MonthlyHistory.js';
 import { User } from './entities/User.js';
+import { Category } from './entities/Category.js';
 
 async function main() {
   const orm = await initORM();
@@ -23,6 +24,20 @@ async function main() {
     console.log('Default user created: admin@budget.app / admin123');
   }
 
+  const cats = await em.find(Category, { user: admin.id });
+  let incomeCat = cats.find((c) => c.name === 'Ingresos');
+  let servicesCat = cats.find((c) => c.name === 'Servicios');
+  let loansCat = cats.find((c) => c.name === 'Préstamos');
+  let variableCat = cats.find((c) => c.name === 'Variables');
+
+  if (!incomeCat) {
+    incomeCat = em.create(Category, { name: 'Ingresos', type: 'income', user: admin.id } as never);
+    servicesCat = em.create(Category, { name: 'Servicios', type: 'expense', user: admin.id } as never);
+    loansCat = em.create(Category, { name: 'Préstamos', type: 'expense', user: admin.id } as never);
+    variableCat = em.create(Category, { name: 'Variables', type: 'expense', user: admin.id } as never);
+    await em.flush();
+  }
+
   const count = await em.count(Item, { user: admin.id });
   if (count > 0) {
     console.log('Already seeded, skipping items');
@@ -31,19 +46,19 @@ async function main() {
   }
 
   const items = [
-    { name: 'Salario Neto', amount: 5980000, type: 'Fijo' as const, category: 'income' as const, monthOffset: 0 },
-    { name: 'Otros Ingresos', amount: 0, type: 'Variable' as const, category: 'income' as const, monthOffset: 0 },
-    { name: 'Agua', amount: 60000, type: 'Fijo' as const, category: 'services' as const, monthOffset: 0 },
-    { name: 'Luz', amount: 100000, type: 'Fijo' as const, category: 'services' as const, monthOffset: 0 },
-    { name: 'Internet', amount: 82000, type: 'Fijo' as const, category: 'services' as const, monthOffset: 0 },
-    { name: 'Gas', amount: 8000, type: 'Fijo' as const, category: 'services' as const, monthOffset: 0 },
-    { name: 'Luz Mamá', amount: 195000, type: 'Fijo' as const, category: 'services' as const, monthOffset: 0 },
-    { name: 'Davivienda', amount: 766000, type: 'Fijo' as const, category: 'loans' as const, monthOffset: 0 },
-    { name: 'Nequi', amount: 174000, type: 'Fijo' as const, category: 'loans' as const, monthOffset: 0 },
-    { name: 'Gasolina', amount: 350000, type: 'Variable' as const, category: 'variable' as const, monthOffset: 0 },
-    { name: 'Parqueadero', amount: 150000, type: 'Variable' as const, category: 'variable' as const, monthOffset: 0 },
+    { name: 'Salario Neto', amount: 5980000, type: 'Fijo' as const, cat: incomeCat! },
+    { name: 'Otros Ingresos', amount: 0, type: 'Variable' as const, cat: incomeCat! },
+    { name: 'Agua', amount: 60000, type: 'Fijo' as const, cat: servicesCat! },
+    { name: 'Luz', amount: 100000, type: 'Fijo' as const, cat: servicesCat! },
+    { name: 'Internet', amount: 82000, type: 'Fijo' as const, cat: servicesCat! },
+    { name: 'Gas', amount: 8000, type: 'Fijo' as const, cat: servicesCat! },
+    { name: 'Luz Mamá', amount: 195000, type: 'Fijo' as const, cat: servicesCat! },
+    { name: 'Davivienda', amount: 766000, type: 'Fijo' as const, cat: loansCat! },
+    { name: 'Nequi', amount: 174000, type: 'Fijo' as const, cat: loansCat! },
+    { name: 'Gasolina', amount: 350000, type: 'Variable' as const, cat: variableCat! },
+    { name: 'Parqueadero', amount: 150000, type: 'Variable' as const, cat: variableCat! },
   ];
-  for (const d of items) em.create(Item, { ...d, user: admin.id } as never);
+  for (const d of items) em.create(Item, { ...d, monthOffset: 0, user: admin.id, cat: d.cat.id } as never);
 
   const pocketData = [
     { name: 'Fondo de Emergencia', balance: 1200000, goal: 5000000, color: '#3B82F6', icon: 'Shield' as const },

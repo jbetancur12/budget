@@ -1,9 +1,10 @@
 import { EntityManager } from '@mikro-orm/core';
 import { Item } from '../entities/Item.js';
+import { Category } from '../entities/Category.js';
 import { NotFoundError } from '../utils/errors.js';
 
 interface ItemQuery {
-  category?: string;
+  categoryId?: number;
   monthOffset?: number;
   search?: string;
 }
@@ -12,7 +13,7 @@ interface CreateItemData {
   name: string;
   amount?: number;
   type?: Item['type'];
-  category: Item['category'];
+  categoryId: number;
   monthOffset?: number;
   date?: string;
   recurring?: boolean;
@@ -23,6 +24,8 @@ interface UpdateItemData {
   amount?: number;
   type?: Item['type'];
   recurring?: boolean;
+  categoryId?: number;
+  date?: string;
 }
 
 export class ItemService {
@@ -30,18 +33,21 @@ export class ItemService {
 
   async findAll(userId: number, query: ItemQuery) {
     const where: Record<string, unknown> = { user: userId };
-    if (query.category) where.category = query.category;
+    if (query.categoryId !== undefined) where.category = query.categoryId;
     if (query.monthOffset !== undefined) where.monthOffset = query.monthOffset;
     if (query.search) where.name = { $ilike: `%${query.search}%` };
-    return this.em.find(Item, where, { orderBy: { date: 'DESC' } });
+    return this.em.find(Item, where, { orderBy: { date: 'DESC' }, populate: ['category'] });
   }
 
   async create(userId: number, data: CreateItemData) {
+    const category = await this.em.findOne(Category, { id: data.categoryId, user: userId });
+    if (!category) throw new NotFoundError('Category not found');
+
     const item = this.em.create(Item, {
       name: data.name,
       amount: data.amount ?? 0,
       type: data.type ?? 'Variable' as const,
-      category: data.category,
+      category: category.id,
       monthOffset: data.monthOffset ?? 0,
       date: data.date ?? new Date().toISOString().slice(0, 10),
       recurring: data.recurring ?? false,
@@ -52,8 +58,15 @@ export class ItemService {
   }
 
   async update(userId: number, id: number, data: UpdateItemData) {
-    const item = await this.em.findOne(Item, { id, user: userId });
+    const item = await this.em.findOne(Item, { id, user: userId }, { populate: ['category'] });
     if (!item) throw new NotFoundError('Item not found');
+
+    if (data.categoryId) {
+      const category = await this.em.findOne(Category, { id: data.categoryId, user: userId });
+      if (!category) throw new NotFoundError('Category not found');
+      (item as any).category = data.categoryId;
+    }
+
     this.em.assign(item, data);
     await this.em.flush();
     return item;

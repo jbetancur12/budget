@@ -9,19 +9,15 @@ import { LoginPage } from '../pages/LoginPage';
 import { useAuth } from '../hooks/useAuth';
 import { useMonth } from '../hooks/useMonth';
 import { useBudgetData } from '../hooks/useBudgetData';
-import type { Tab } from '../types';
+import type { Tab, ItemData } from '../types';
 
 export default function App() {
   const { user, loading, logout } = useAuth();
   const { monthOffset, monthLabel, shortLabel, nextMonthLabel, setMonthOffset } = useMonth();
   const budgetData = useBudgetData(user ? monthOffset : null);
   const [tab, setTab] = useState<Tab>('dashboard');
-  const [servicesOpen, setServicesOpen] = useState(true);
-  const [loansOpen, setLoansOpen] = useState(true);
-  const [variableOpen, setVariableOpen] = useState(true);
-  const [incomeOpen, setIncomeOpen] = useState(true);
+  const [openCategories, setOpenCategories] = useState<Record<number, boolean>>({});
 
-  // Reset iOS zoom after login transitions
   useEffect(() => {
     if (user) {
       const meta = document.querySelector('meta[name=viewport]');
@@ -43,10 +39,17 @@ export default function App() {
   if (!user) return <LoginPage />;
 
   const {
-    income, services, loans, variableExp, pockets, chartHistory,
-    incomeH, servicesH, loansH, variableH, updatePockets,
-    search, setSearch,
+    categories, incomeCategories, expenseCategories, itemsByCategory,
+    pockets, chartHistory, search, setSearch, makeHandlers, updatePockets,
   } = budgetData;
+
+  // Computed from categories for backward compat with Dashboard/Pockets
+  const allItems = Object.values(itemsByCategory).flat();
+  const incomeItems = incomeCategories.flatMap((c) => itemsByCategory[c.id] ?? []);
+  const expenseItems = expenseCategories.flatMap((c) => itemsByCategory[c.id] ?? []);
+
+  const totalIncome = incomeItems.reduce((s, i) => s + i.amount, 0);
+  const totalExpenses = expenseItems.reduce((s, i) => s + i.amount, 0);
 
   return (
     <div className="h-full bg-background flex flex-col">
@@ -64,10 +67,10 @@ export default function App() {
       <main className="flex-1 overflow-y-auto max-w-7xl w-full mx-auto px-4 sm:px-6 py-4 sm:py-6 pb-16 sm:pb-6">
         {tab === 'dashboard' && (
           <Dashboard
-            income={income}
-            services={services}
-            loans={loans}
-            variableExp={variableExp}
+            income={incomeItems}
+            services={[]}
+            loans={[]}
+            variableExp={expenseItems}
             pockets={pockets}
             chartHistory={chartHistory}
             shortLabel={shortLabel}
@@ -77,23 +80,14 @@ export default function App() {
 
         {tab === 'transactions' && (
           <Transactions
-            income={income}
-            services={services}
-            loans={loans}
-            variableExp={variableExp}
+            categories={categories}
+            incomeCategories={incomeCategories}
+            expenseCategories={expenseCategories}
+            itemsByCategory={itemsByCategory}
             monthLabel={monthLabel}
-            servicesOpen={servicesOpen}
-            loansOpen={loansOpen}
-            variableOpen={variableOpen}
-            incomeOpen={incomeOpen}
-            onToggleServices={() => setServicesOpen((o) => !o)}
-            onToggleLoans={() => setLoansOpen((o) => !o)}
-            onToggleVariable={() => setVariableOpen((o) => !o)}
-            onToggleIncome={() => setIncomeOpen((o) => !o)}
-            incomeH={incomeH}
-            servicesH={servicesH}
-            loansH={loansH}
-            variableH={variableH}
+            openCategories={openCategories}
+            onToggleCategory={(id) => setOpenCategories((o) => ({ ...o, [id]: !o[id] }))}
+            makeHandlers={makeHandlers}
             search={search}
             onSearchChange={setSearch}
           />
@@ -102,10 +96,10 @@ export default function App() {
         {tab === 'pockets' && (
           <Pockets
             pockets={pockets}
-            income={income}
-            services={services}
-            loans={loans}
-            variableExp={variableExp}
+            income={incomeItems}
+            services={[]}
+            loans={[]}
+            variableExp={expenseItems}
             monthLabel={monthLabel}
             monthOffset={monthOffset}
             nextMonthLabel={nextMonthLabel}

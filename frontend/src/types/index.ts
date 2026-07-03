@@ -7,12 +7,18 @@ export type PocketIcon = 'Shield' | 'Plane' | 'TrendingUp' | 'BookOpen';
 export type DistributeMode = 'amount' | 'percent';
 
 // ─── Data shapes (from API) ───────────────────────────────────────────────────
+export interface CategoryData {
+  id: number;
+  name: string;
+  type: 'income' | 'expense';
+}
+
 export interface ItemData {
   id: number;
   name: string;
   amount: number;
   type: ItemType;
-  category: ItemCategory;
+  category: CategoryData;
   monthOffset: number;
   date: string;
   recurring: boolean;
@@ -54,4 +60,5 @@ export interface ItemHandlers {
   onDelete: (id: number) => Promise<void>;
   onAdd: (name: string, amount: number, date?: string, recurring?: boolean) => Promise<void>;
   onRecurringToggle?: (id: number, recurring: boolean) => Promise<void>;
+  categoryId: number;
 }

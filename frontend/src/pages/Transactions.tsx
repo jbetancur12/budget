@@ -1,48 +1,41 @@
 import { Search, Download } from 'lucide-react';
 import { TableSection } from '../components/TableSection';
 import { fmt } from '../utils';
-import type { ItemData, ItemHandlers } from '../types';
+import type { ItemData, CategoryData, ItemHandlers } from '../types';
 
 interface TransactionsProps {
-  income: ItemData[];
-  services: ItemData[];
-  loans: ItemData[];
-  variableExp: ItemData[];
+  categories: CategoryData[];
+  incomeCategories: CategoryData[];
+  expenseCategories: CategoryData[];
+  itemsByCategory: Record<number, ItemData[]>;
   monthLabel: string;
-  servicesOpen: boolean;
-  loansOpen: boolean;
-  variableOpen: boolean;
-  incomeOpen: boolean;
-  onToggleServices: () => void;
-  onToggleLoans: () => void;
-  onToggleVariable: () => void;
-  onToggleIncome: () => void;
-  incomeH: ItemHandlers;
-  servicesH: ItemHandlers;
-  loansH: ItemHandlers;
-  variableH: ItemHandlers;
+  openCategories: Record<number, boolean>;
+  onToggleCategory: (id: number) => void;
+  makeHandlers: (categoryId: number, type: 'Fijo' | 'Variable') => ItemHandlers;
   search?: string;
   onSearchChange?: (value: string) => void;
 }
 
-function downloadCSV(income: ItemData[], services: ItemData[], loans: ItemData[], variableExp: ItemData[], monthLabel: string) {
-  const catLabel: Record<string, string> = { income: 'Ingresos', services: 'Servicios', loans: 'Préstamos', variable: 'Variables' };
-
+function downloadCSV(categories: CategoryData[], itemsByCategory: Record<number, ItemData[]>, monthLabel: string) {
   const rows: string[] = [];
   rows.push('Categoría,Nombre,Monto,Tipo,Fecha');
-  for (const item of [...income, ...services, ...loans, ...variableExp]) {
-    const cat = catLabel[item.category] || item.category;
-    rows.push(`${cat},${item.name},${item.amount},${item.type},${item.date}`);
+  for (const cat of categories) {
+    for (const item of itemsByCategory[cat.id] ?? []) {
+      rows.push(`${cat.name},${item.name},${item.amount},${item.type},${item.date}`);
+    }
   }
 
-  const totals = [
-    { category: 'Ingresos', total: income.reduce((s, i) => s + i.amount, 0) },
-    { category: 'Gastos Fijos', total: services.reduce((s, i) => s + i.amount, 0) + loans.reduce((s, i) => s + i.amount, 0) },
-    { category: 'Gastos Variables', total: variableExp.reduce((s, i) => s + i.amount, 0) },
-  ];
+  const totalIncome = categories.filter((c) => c.type === 'income')
+    .flatMap((c) => itemsByCategory[c.id] ?? [])
+    .reduce((s, i) => s + i.amount, 0);
+  const totalExpenses = categories.filter((c) => c.type === 'expense')
+    .flatMap((c) => itemsByCategory[c.id] ?? [])
+    .reduce((s, i) => s + i.amount, 0);
+
   rows.push('');
   rows.push('Resumen,Categoría,Total');
-  for (const t of totals) rows.push(`${t.category},${t.total}`);
+  rows.push(`Ingresos,,${totalIncome}`);
+  rows.push(`Gastos,,${totalExpenses}`);
 
   const blob = new Blob(['\uFEFF' + rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
@@ -54,16 +47,16 @@ function downloadCSV(income: ItemData[], services: ItemData[], loans: ItemData[]
 }
 
 export function Transactions({
-  income, services, loans, variableExp, monthLabel,
-  servicesOpen, loansOpen, variableOpen, incomeOpen, onToggleServices, onToggleLoans, onToggleVariable, onToggleIncome,
-  incomeH, servicesH, loansH, variableH, search, onSearchChange,
+  categories, incomeCategories, expenseCategories, itemsByCategory, monthLabel,
+  openCategories, onToggleCategory, makeHandlers,
+  search, onSearchChange,
 }: TransactionsProps) {
-  const totalIncome = income.reduce((s, i) => s + i.amount, 0);
-  const totalServices = services.reduce((s, i) => s + i.amount, 0);
-  const totalLoans = loans.reduce((s, i) => s + i.amount, 0);
-  const totalVariable = variableExp.reduce((s, i) => s + i.amount, 0);
-  const totalFixed = totalServices + totalLoans;
-  const totalExpenses = totalFixed + totalVariable;
+  const totalIncome = incomeCategories
+    .flatMap((c) => itemsByCategory[c.id] ?? [])
+    .reduce((s, i) => s + i.amount, 0);
+  const totalExpenses = expenseCategories
+    .flatMap((c) => itemsByCategory[c.id] ?? [])
+    .reduce((s, i) => s + i.amount, 0);
   const balance = totalIncome - totalExpenses;
 
   return (
@@ -74,7 +67,7 @@ export function Transactions({
           <p className="text-sm text-muted-foreground">{monthLabel}</p>
         </div>
         <button
-          onClick={() => downloadCSV(income, services, loans, variableExp, monthLabel)}
+          onClick={() => downloadCSV(categories, itemsByCategory, monthLabel)}
           className="p-2 rounded-xl border border-border hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
           title="Exportar CSV"
         >
@@ -101,26 +94,50 @@ export function Transactions({
           <h2 className="font-bold text-foreground text-sm uppercase tracking-wide">Ingresos</h2>
           <span className="ml-auto font-mono text-sm font-bold text-chart-2">{fmt(totalIncome)}</span>
         </div>
-        <TableSection title="Ingresos" items={income} type="Variable" total={totalIncome} totalColor="text-chart-2" collapsible isOpen={incomeOpen} onToggle={onToggleIncome} {...incomeH} />
-      </div>
-
-      <div className="mb-5">
-        <div className="flex items-center gap-2 mb-2.5">
-          <div className="w-1 h-4 rounded-full bg-chart-1" />
-          <h2 className="font-bold text-foreground text-sm uppercase tracking-wide">Gastos Fijos</h2>
-          <span className="ml-auto font-mono text-sm font-bold text-chart-4">{fmt(totalFixed)}</span>
-        </div>
-        <TableSection title="Servicios" items={services} type="Fijo" total={totalServices} totalColor="text-chart-4" collapsible isOpen={servicesOpen} onToggle={onToggleServices} {...servicesH} />
-        <TableSection title="Préstamos" items={loans} type="Fijo" total={totalLoans} totalColor="text-chart-4" collapsible isOpen={loansOpen} onToggle={onToggleLoans} {...loansH} />
+        {incomeCategories.map((cat) => {
+          const items = itemsByCategory[cat.id] ?? [];
+          const h = makeHandlers(cat.id, 'Variable');
+          return (
+            <TableSection
+              key={cat.id}
+              title={cat.name}
+              items={items}
+              type="Variable"
+              total={items.reduce((s, i) => s + i.amount, 0)}
+              totalColor="text-chart-2"
+              collapsible
+              isOpen={openCategories[cat.id] !== false}
+              onToggle={() => onToggleCategory(cat.id)}
+              {...h}
+            />
+          );
+        })}
       </div>
 
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2.5">
-          <div className="w-1 h-4 rounded-full bg-chart-2" />
-          <h2 className="font-bold text-foreground text-sm uppercase tracking-wide">Gastos Variables</h2>
-          <span className="ml-auto font-mono text-sm font-bold text-chart-4">{fmt(totalVariable)}</span>
+          <div className="w-1 h-4 rounded-full bg-chart-4" />
+          <h2 className="font-bold text-foreground text-sm uppercase tracking-wide">Gastos</h2>
+          <span className="ml-auto font-mono text-sm font-bold text-chart-4">{fmt(totalExpenses)}</span>
         </div>
-        <TableSection title="Variables" items={variableExp} type="Variable" total={totalVariable} totalColor="text-chart-4" collapsible isOpen={variableOpen} onToggle={onToggleVariable} {...variableH} />
+        {expenseCategories.map((cat) => {
+          const items = itemsByCategory[cat.id] ?? [];
+          const h = makeHandlers(cat.id, 'Fijo');
+          return (
+            <TableSection
+              key={cat.id}
+              title={cat.name}
+              items={items}
+              type="Fijo"
+              total={items.reduce((s, i) => s + i.amount, 0)}
+              totalColor="text-chart-4"
+              collapsible
+              isOpen={openCategories[cat.id] !== false}
+              onToggle={() => onToggleCategory(cat.id)}
+              {...h}
+            />
+          );
+        })}
       </div>
 
       <div className="bg-accent/10 border border-accent/20 rounded-2xl p-4">
