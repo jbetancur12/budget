@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
-import { fmt, parseAmount } from '../utils';
+import { fmt, parseAmount, formatInput } from '../utils';
 import type { Item } from '../types';
 
 interface EditableRowProps {
@@ -15,7 +15,7 @@ export function EditableRow({ item, onAmountChange, onDelete, showType }: Editab
   const [value, setValue] = useState('');
 
   const startEdit = () => {
-    setValue(String(item.amount));
+    setValue(formatInput(String(item.amount)));
     setEditing(true);
   };
 
@@ -36,7 +36,7 @@ export function EditableRow({ item, onAmountChange, onDelete, showType }: Editab
             autoFocus
             className="font-mono text-sm w-36 border-2 border-primary rounded-lg px-2 py-1 bg-card focus:outline-none focus:ring-2 focus:ring-primary/20"
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => setValue(formatInput(e.target.value))}
             onBlur={commit}
             onKeyDown={(e) => {
               if (e.key === 'Enter') commit();

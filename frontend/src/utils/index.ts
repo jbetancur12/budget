@@ -34,6 +34,12 @@ export const fmt = (n: number): string => {
   return (n < 0 ? '-$' : '$') + formatted;
 };
 
+export const formatInput = (v: string): string => {
+  const digits = v.replace(/[^\d]/g, '');
+  if (!digits) return '';
+  return parseInt(digits, 10).toLocaleString('es-CO');
+};
+
 export const parseAmount = (v: string): number => parseFloat(v.replace(/[^\d]/g, '')) || 0;
 
 export const safePercent = (num: number, den: number): number =>

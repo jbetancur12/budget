@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Check, X } from 'lucide-react';
-import { parseAmount } from '../utils';
+import { parseAmount, formatInput } from '../utils';
 import type { ItemType } from '../types';
 
 interface AddRowProps {
@@ -48,7 +48,7 @@ export function AddRow({ type: _type, onAdd, onCancel, showType }: AddRowProps) 
           className="font-mono text-sm border border-primary/40 rounded-lg px-2.5 py-1 w-36 focus:outline-none focus:ring-2 focus:ring-primary/20 bg-card placeholder:text-muted-foreground/60"
           placeholder="0"
           value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          onChange={(e) => setAmount(formatInput(e.target.value))}
           onKeyDown={(e) => {
             if (e.key === 'Enter') commit();
             if (e.key === 'Escape') onCancel();
