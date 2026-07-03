@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react';
+import { Search, Download } from 'lucide-react';
 import { TableSection } from '../components/TableSection';
 import { fmt } from '../utils';
 import type { ItemData, ItemHandlers } from '../types';
@@ -25,6 +25,34 @@ interface TransactionsProps {
   onSearchChange?: (value: string) => void;
 }
 
+function downloadCSV(income: ItemData[], services: ItemData[], loans: ItemData[], variableExp: ItemData[], monthLabel: string) {
+  const catLabel: Record<string, string> = { income: 'Ingresos', services: 'Servicios', loans: 'Préstamos', variable: 'Variables' };
+
+  const rows: string[] = [];
+  rows.push('Categoría,Nombre,Monto,Tipo,Fecha');
+  for (const item of [...income, ...services, ...loans, ...variableExp]) {
+    const cat = catLabel[item.category] || item.category;
+    rows.push(`${cat},${item.name},${item.amount},${item.type},${item.date}`);
+  }
+
+  const totals = [
+    { category: 'Ingresos', total: income.reduce((s, i) => s + i.amount, 0) },
+    { category: 'Gastos Fijos', total: services.reduce((s, i) => s + i.amount, 0) + loans.reduce((s, i) => s + i.amount, 0) },
+    { category: 'Gastos Variables', total: variableExp.reduce((s, i) => s + i.amount, 0) },
+  ];
+  rows.push('');
+  rows.push('Resumen,Categoría,Total');
+  for (const t of totals) rows.push(`${t.category},${t.total}`);
+
+  const blob = new Blob(['\uFEFF' + rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `presupuesto-${monthLabel.replace(/\s/g, '-')}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export function Transactions({
   income, services, loans, variableExp, monthLabel,
   servicesOpen, loansOpen, variableOpen, incomeOpen, onToggleServices, onToggleLoans, onToggleVariable, onToggleIncome,
@@ -45,6 +73,13 @@ export function Transactions({
           <h1 className="text-xl font-bold text-foreground">Transacciones</h1>
           <p className="text-sm text-muted-foreground">{monthLabel}</p>
         </div>
+        <button
+          onClick={() => downloadCSV(income, services, loans, variableExp, monthLabel)}
+          className="p-2 rounded-xl border border-border hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+          title="Exportar CSV"
+        >
+          <Download className="w-4 h-4" />
+        </button>
       </div>
 
       {onSearchChange && (
