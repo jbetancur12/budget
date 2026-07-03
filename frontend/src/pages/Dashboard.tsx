@@ -105,9 +105,9 @@ export function Dashboard({
           mobileLabel={`Ahorro ${savingsRate}%`}
           value={fmt(savings)}
           sub={`${savingsRate}% del saldo disponible`}
-          valueColor="text-accent-foreground"
+          valueColor="text-foreground"
           bgClass="bg-accent/20"
-          icon={<PiggyBank className="w-4 h-4 text-accent-foreground" />}
+          icon={<PiggyBank className="w-4 h-4 text-foreground" />}
           tooltip={`Calculado automáticamente como ${savingsRate}% del saldo disponible`}
         />
       </div>
