@@ -17,6 +17,8 @@ interface TransactionsProps {
   search?: string;
   onSearchChange?: (value: string) => void;
   onCategoriesChange?: () => void;
+  onExpandAll?: () => void;
+  onCollapseAll?: () => void;
 }
 
 function downloadCSV(
@@ -67,6 +69,8 @@ export function Transactions({
   search,
   onSearchChange,
   onCategoriesChange,
+  onExpandAll,
+  onCollapseAll,
 }: TransactionsProps) {
   const [showCategories, setShowCategories] = useState(false);
   const totalIncome = incomeCategories
@@ -115,6 +119,12 @@ export function Transactions({
         </div>
       )}
 
+      {onExpandAll && onCollapseAll && (
+        <div className="flex gap-2 mb-4">
+          <button onClick={onExpandAll} className="text-xs px-3 py-1.5 border border-border rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground font-semibold">Expandir todo</button>
+          <button onClick={onCollapseAll} className="text-xs px-3 py-1.5 border border-border rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground font-semibold">Colapsar todo</button>
+        </div>
+      )}
       <div className="mb-5">
         <div className="flex items-center gap-2 mb-2.5">
           <div className="w-1 h-4 rounded-full bg-chart-2" />

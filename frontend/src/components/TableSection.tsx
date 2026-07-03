@@ -23,6 +23,7 @@ interface TableSectionProps {
   onAdd: (name: string, amount: number, date?: string, recurring?: boolean) => Promise<void>;
   onRecurringToggle?: (id: number, recurring: boolean) => Promise<void>;
   onNotesChange?: (id: number, notes: string) => Promise<void>;
+  onDuplicate?: (id: number) => Promise<void>;
 }
 
 export function TableSection({
@@ -42,6 +43,7 @@ export function TableSection({
   onAdd,
   onRecurringToggle,
   onNotesChange,
+  onDuplicate,
 }: TableSectionProps) {
   const [adding, setAdding] = useState(false);
   const [deleting, setDeleting] = useState<{ id: number; name: string } | null>(null);
@@ -81,6 +83,7 @@ export function TableSection({
                   showType={showType}
                   onRecurringToggle={onRecurringToggle}
                   onNotesChange={onNotesChange}
+                  onDuplicate={onDuplicate}
                 />
               ))}
               {adding && (

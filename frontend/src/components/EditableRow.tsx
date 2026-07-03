@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Trash2, RefreshCw } from 'lucide-react';
+import { Trash2, RefreshCw, Copy } from 'lucide-react';
 import { fmt, parseAmount, formatInput } from '../utils';
 import type { Item } from '../types';
 
@@ -12,6 +12,7 @@ interface EditableRowProps {
   showType?: boolean;
   onRecurringToggle?: (id: number, recurring: boolean) => Promise<void>;
   onNotesChange?: (id: number, notes: string) => Promise<void>;
+  onDuplicate?: (id: number) => Promise<void>;
 }
 
 export function EditableRow({
@@ -23,6 +24,7 @@ export function EditableRow({
   showType,
   onRecurringToggle,
   onNotesChange,
+  onDuplicate,
 }: EditableRowProps) {
   const [editingAmount, setEditingAmount] = useState(false);
   const [amountValue, setAmountValue] = useState('');
@@ -210,8 +212,17 @@ export function EditableRow({
           </span>
         </td>
       )}
-      <td className="py-2.5 px-3 w-12">
+      <td className="py-2.5 px-3 w-20">
         <div className="flex items-center justify-end gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+          {onDuplicate && (
+            <button
+              onClick={() => onDuplicate(item.id)}
+              className="p-1.5 rounded-lg hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
+              title="Duplicar"
+            >
+              <Copy className="w-3.5 h-3.5" />
+            </button>
+          )}
           <button
             onClick={() => onDelete(item.id)}
             className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"

@@ -136,6 +136,18 @@ export function useBudgetData(monthOffset: number | null) {
           await api.updateItem(id, { notes });
           refresh(offset, search || undefined);
         },
+        onDuplicate: async (id: number) => {
+          const item = Object.values(data.itemsByCategory).flat().find((i) => i.id === id);
+          if (item) {
+            await api.createItem({
+              name: item.name, amount: item.amount, type: item.type,
+              categoryId: item.category.id, monthOffset: item.monthOffset,
+              date: new Date().toISOString().slice(0, 10),
+              recurring: item.recurring, notes: item.notes,
+            });
+            refresh(offset, search || undefined);
+          }
+        },
       };
     },
     [monthOffset, search, refresh, data],

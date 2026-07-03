@@ -16,6 +16,7 @@ import { MiniBar } from '../components/MiniBar';
 import { PocketIcon } from '../components/PocketIcon';
 import { QuickAddModal } from '../components/QuickAddModal';
 import { SettingsModal } from '../components/SettingsModal';
+import { YearStatsModal } from '../components/YearStatsModal';
 import * as api from '../api';
 import { fmt, safePercent } from '../utils';
 import type { ItemData, PocketData, ChartRow, CategoryData } from '../types';
@@ -47,6 +48,7 @@ export function Dashboard({
 }: DashboardProps) {
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showYearStats, setShowYearStats] = useState(false);
   const [savingsRate, setSavingsRate] = useState(50);
   const [debtTotals, setDebtTotals] = useState({ lent: 0, borrowed: 0 });
 
@@ -140,7 +142,10 @@ export function Dashboard({
       <div className="grid lg:grid-cols-3 gap-5">
         <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-5 shadow-sm animate-in animate-in-d1">
           <div className="mb-4">
-            <h2 className="text-sm font-bold text-foreground">Comparativo Mensual</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-bold text-foreground">Comparativo Mensual</h2>
+              <button onClick={() => setShowYearStats(true)} className="text-xs text-primary font-semibold hover:underline" title="Ver estadísticas anuales">Ver anual</button>
+            </div>
             <p className="text-xs text-muted-foreground">Ingresos vs. Gastos — últimos 6 meses</p>
           </div>
           <ResponsiveContainer width="100%" height={200}>
@@ -378,6 +383,7 @@ export function Dashboard({
       )}
 
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
+      {showYearStats && <YearStatsModal history={chartHistory} currentIncome={totalIncome} currentExpenses={totalExpenses} onClose={() => setShowYearStats(false)} />}
     </div>
   );
 }
