@@ -38,7 +38,8 @@ export async function request<T>(url: string, options?: RequestInit): Promise<T>
       window.location.href = '/';
     }
     const body = await res.json().catch(() => ({}));
-    throw new ApiError(body.message || `Request failed: ${res.status}`, res.status);
+    const detail = body.errors ? body.errors.map((e: { field: string; message: string }) => `${e.field}: ${e.message}`).join(', ') : '';
+    throw new ApiError(`${body.message}${detail ? ` (${detail})` : ''}` || `Request failed: ${res.status}`, res.status);
   }
 
   if (res.status === 204) return undefined as T;
