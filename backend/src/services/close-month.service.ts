@@ -82,6 +82,7 @@ export class CloseMonthService {
         category: 'income' as const,
         monthOffset,
         user: userId,
+        date: new Date().toISOString().slice(0, 10),
       } as never);
     }
   }
@@ -99,6 +100,7 @@ export class CloseMonthService {
             category: item.category,
             monthOffset: nextOffset,
             user: userId,
+            date: new Date().toISOString().slice(0, 10),
           } as never);
         }
       }

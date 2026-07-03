@@ -92,8 +92,8 @@ export function useBudgetData(monthOffset: number | null) {
           const items = await loadCategory(category, offset);
           setData((prev) => updateCategory(prev, category, items));
         },
-        onAdd: async (name: string, amount: number) => {
-          await api.createItem({ name, amount, type, category, monthOffset: offset });
+        onAdd: async (name: string, amount: number, date?: string) => {
+          await api.createItem({ name, amount, type, category, monthOffset: offset, date });
           const items = await loadCategory(category, offset);
           setData((prev) => updateCategory(prev, category, items));
         },

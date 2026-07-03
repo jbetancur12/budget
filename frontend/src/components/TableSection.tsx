@@ -17,7 +17,7 @@ interface TableSectionProps {
   onToggle?: () => void;
   onAmountChange: (id: number, amount: number) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
-  onAdd: (name: string, amount: number) => Promise<void>;
+  onAdd: (name: string, amount: number, date?: string) => Promise<void>;
 }
 
 export function TableSection({
@@ -73,8 +73,8 @@ export function TableSection({
                 <AddRow
                   type={type}
                   showType={showType}
-                  onAdd={(name, amount) => {
-                    onAdd(name, amount);
+                  onAdd={(name, amount, date) => {
+                    onAdd(name, amount, date);
                     setAdding(false);
                   }}
                   onCancel={() => setAdding(false)}

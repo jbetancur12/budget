@@ -157,6 +157,22 @@
           "comment": null,
           "enumItems": [],
           "mappedType": "integer"
+        },
+        "date": {
+          "name": "date",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 0,
+          "precision": null,
+          "scale": null,
+          "default": "CURRENT_DATE",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "date"
         }
       },
       "name": "item",

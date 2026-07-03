@@ -13,6 +13,7 @@ interface CreateItemData {
   type?: Item['type'];
   category: Item['category'];
   monthOffset?: number;
+  date?: string;
 }
 
 interface UpdateItemData {
@@ -38,6 +39,7 @@ export class ItemService {
       type: data.type ?? 'Variable' as const,
       category: data.category,
       monthOffset: data.monthOffset ?? 0,
+      date: data.date ?? new Date().toISOString().slice(0, 10),
       user: userId,
     } as never);
     await this.em.flush();

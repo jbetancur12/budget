@@ -24,6 +24,9 @@ export class Item {
   @Property({ default: 0 })
   monthOffset!: number;
 
+  @Property({ columnType: 'date', defaultRaw: 'CURRENT_DATE' })
+  date!: string;
+
   @Property({ onCreate: () => new Date() })
   createdAt!: Date;
 

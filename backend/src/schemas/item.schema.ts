@@ -7,6 +7,7 @@ export const createItemSchema = z.object({
     type: z.enum(['Fijo', 'Variable']).optional().default('Variable'),
     category: z.enum(['income', 'services', 'loans', 'variable']),
     monthOffset: z.number().int().optional().default(0),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   }),
 });
 

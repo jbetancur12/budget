@@ -11,6 +11,7 @@ export async function createItem(data: {
   type: 'Fijo' | 'Variable';
   category: string;
   monthOffset: number;
+  date?: string;
 }): Promise<ItemData> {
   return request<ItemData>('/items', {
     method: 'POST',

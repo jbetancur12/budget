@@ -5,7 +5,7 @@ import type { ItemType } from '../types';
 
 interface AddRowProps {
   type: ItemType;
-  onAdd: (name: string, amount: number) => void;
+  onAdd: (name: string, amount: number, date?: string) => void;
   onCancel: () => void;
   showType?: boolean;
 }
@@ -13,10 +13,11 @@ interface AddRowProps {
 export function AddRow({ type: _type, onAdd, onCancel, showType }: AddRowProps) {
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
+  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
 
   const commit = () => {
     if (!name.trim()) return;
-    onAdd(name.trim(), parseAmount(amount));
+    onAdd(name.trim(), parseAmount(amount), date);
   };
 
   return (
@@ -32,6 +33,14 @@ export function AddRow({ type: _type, onAdd, onCancel, showType }: AddRowProps) 
             if (e.key === 'Enter') commit();
             if (e.key === 'Escape') onCancel();
           }}
+        />
+      </td>
+      <td className="py-2 px-4 w-28">
+        <input
+          type="date"
+          className="text-xs border border-primary/40 rounded-lg px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-primary/20 bg-card"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
         />
       </td>
       <td className="py-2 px-4 w-44">

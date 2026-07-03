@@ -27,6 +27,9 @@ export function EditableRow({ item, onAmountChange, onDelete, showType }: Editab
   return (
     <tr className="group border-b border-border/40 last:border-0 hover:bg-primary/[0.03] transition-colors">
       <td className="py-2.5 px-4 text-sm text-foreground">{item.name}</td>
+      <td className="py-2.5 px-4 text-xs text-muted-foreground w-28">
+        {item.date?.slice(0, 10)}
+      </td>
       <td className="py-2.5 px-4 w-44">
         {editing ? (
           <input

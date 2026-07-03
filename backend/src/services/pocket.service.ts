@@ -71,6 +71,7 @@ export class PocketService {
           category: 'income',
           monthOffset,
           user: userId,
+          date: new Date().toISOString().slice(0, 10),
         } as never);
       }
 
@@ -96,6 +97,7 @@ export class PocketService {
         category: 'variable',
         monthOffset,
         user: userId,
+        date: new Date().toISOString().slice(0, 10),
       } as never);
     }
 

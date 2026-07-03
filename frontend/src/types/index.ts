@@ -14,6 +14,7 @@ export interface ItemData {
   type: ItemType;
   category: ItemCategory;
   monthOffset: number;
+  date: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -48,5 +49,5 @@ export interface ChartRow {
 export interface ItemHandlers {
   onAmountChange: (id: number, amount: number) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
-  onAdd: (name: string, amount: number) => Promise<void>;
+  onAdd: (name: string, amount: number, date?: string) => Promise<void>;
 }
